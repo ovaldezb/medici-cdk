@@ -1,6 +1,7 @@
-import { LambdaRestApi } from "aws-cdk-lib/aws-apigateway";
+import { LambdaRestApi, CognitoUserPoolsAuthorizer, Resource, LambdaIntegration, AuthorizationType, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 
 interface SwApiGatewaysProps{
@@ -14,8 +15,10 @@ interface SwApiGatewaysProps{
 
 export class SwApiGateway extends Construct{
 
-  constructor(scope: Construct, id: string, props:SwApiGatewaysProps){
+  private _clinicaCognito:cognito.UserPool;
+  constructor(scope: Construct, id: string, props:SwApiGatewaysProps, clinicaCognito: cognito.UserPool){
     super(scope,id);
+    this._clinicaCognito = clinicaCognito;
     this.createApigCitas(props.citasLambda);
     this.createApigMedicos(props.medicosLambda);
     this.createApigPaciente(props.pacientesLambda);
@@ -25,41 +28,68 @@ export class SwApiGateway extends Construct{
   }
 
   private createApigCitas(citasLambda:IFunction){
-    const apiGwCitas = new LambdaRestApi(this, 'CitasApiGw', {
+    const apiGwCitas = new RestApi(this, 'CitasApiGw', {
       restApiName: 'Citas Service',
-      handler: citasLambda,
-      proxy: false,
+      //handler: citasLambda,
+      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
-      defaultCorsPreflightOptions: {
+      /*defaultCorsPreflightOptions: {
         allowHeaders: [
           'Content-Type',
           'X-Amz-Date',
           'Authorization',
-          'X-Api-Key',
+          'X-Api-Key'
         ],
         allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowCredentials: true,
         allowOrigins: ['*'],
-      }
+      }*/
+    });
+
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'CitasAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
     });
 
     const citas = apiGwCitas.root.addResource('cita');
-    citas.addMethod('POST');
+    citas.addCorsPreflight({
+      allowOrigins:['*'],
+      allowMethods:['POST']
+    });
+    citas.addMethod('POST',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
     const getCitaByFecha = citas.addResource('{parametro}');
-    getCitaByFecha.addMethod('GET');
-    getCitaByFecha.addMethod('PUT');
-    getCitaByFecha.addMethod('DELETE');
+    getCitaByFecha.addCorsPreflight({
+      allowOrigins:['*'],
+      allowMethods:['GET','PUT','DELETE']
+    });
+    getCitaByFecha.addMethod('GET',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
+    getCitaByFecha.addMethod('PUT',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
+    getCitaByFecha.addMethod('DELETE',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
+
     const getCitaByFechaAndMedico = getCitaByFecha.addResource('{idMedico}');
-    getCitaByFechaAndMedico.addMethod('GET');
+    getCitaByFechaAndMedico.addCorsPreflight({
+      allowOrigins:['*'],
+      allowMethods:['GET']
+    });
+    getCitaByFechaAndMedico.addMethod('GET',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
   }
 
   private createApigMedicos(medicosLambda:IFunction){
-    const apiGwMedico = new LambdaRestApi(this, 'MedicoApiGw', {
+    const apiGwMedico = new RestApi(this, 'MedicoApiGw', {
       restApiName: 'Medico Service',
-      handler: medicosLambda,
-      proxy: false,
+      //handler: medicosLambda,
+      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -74,22 +104,26 @@ export class SwApiGateway extends Construct{
         allowCredentials: true,
         allowOrigins: ['*'],
       }
+    });
+
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'MedicoAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
     });
 
     const medico = apiGwMedico.root.addResource('medico');
-    medico.addMethod('POST');
-    medico.addMethod('GET');
+    medico.addMethod('POST',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
+    medico.addMethod('GET',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
     const actionMedicoById = medico.addResource('{idMedico}');
-    actionMedicoById.addMethod('GET');
-    actionMedicoById.addMethod('PUT');
-    actionMedicoById.addMethod('DELETE');
+    actionMedicoById.addMethod('GET',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
+    actionMedicoById.addMethod('PUT', new LambdaIntegration(medicosLambda),{authorizer:authorizer});
+    actionMedicoById.addMethod('DELETE', new LambdaIntegration(medicosLambda),{authorizer:authorizer});
   }
 
   private createApigPaciente(pacienteLambda:IFunction){
-    const apiGwPaciente = new LambdaRestApi(this, 'PacienteApiGw', {
+    const apiGwPaciente = new RestApi(this, 'PacienteApiGw', {
       restApiName: 'Paciente Service',
-      handler: pacienteLambda,
-      proxy: false,
+      //handler: pacienteLambda,
+      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -105,27 +139,29 @@ export class SwApiGateway extends Construct{
         allowOrigins: ['*'],
       }
     });
-
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'PacientesAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
     const paciente = apiGwPaciente.root.addResource('paciente');
-    paciente.addMethod('POST');
-    paciente.addMethod('GET');
+    paciente.addMethod('POST',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
+    paciente.addMethod('GET',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
     const pacienteNombre = paciente.addResource('nombre').addResource('{nombre}');
-    pacienteNombre.addMethod('GET');
+    pacienteNombre.addMethod('GET',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
     const pacienteApellido = paciente.addResource('apellido').addResource('{apellido}');
-    pacienteApellido.addResource('GET');
+    pacienteApellido.addMethod('GET',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
     const pacienteTelefono = paciente.addResource('telefono').addResource('{telefono}');
-    pacienteTelefono.addMethod('GET');
+    pacienteTelefono.addMethod('GET',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
     const pacienteById = paciente.addResource('{idPaciente}');
-    pacienteById.addMethod('PUT');
-    pacienteById.addMethod('DELETE');
-    pacienteById.addMethod('GET');
+    pacienteById.addMethod('PUT',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
+    pacienteById.addMethod('DELETE',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
+    pacienteById.addMethod('GET',new LambdaIntegration(pacienteLambda),{authorizer:authorizer});
   }
 
   private createApigSignos(signosLambda:IFunction){
-    const apiGwSignos = new LambdaRestApi(this, 'SignosApiGw', {
+    const apiGwSignos = new RestApi(this, 'SignosApiGw', {
       restApiName: 'Signos Service',
-      handler: signosLambda,
-      proxy: false,
+      //handler: signosLambda,
+      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -141,12 +177,16 @@ export class SwApiGateway extends Construct{
         allowOrigins: ['*'],
       }
     });
+    
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'SignosAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
 
     const signos = apiGwSignos.root.addResource('signos');
-    signos.addMethod('POST');
+    signos.addMethod('POST',new LambdaIntegration(signosLambda),{authorizer:authorizer});
     const signosById = signos.addResource('{parametro}'); //en el put is el idSigno, en el get es idPaciente
-    signosById.addMethod('PUT');
-    signosById.addMethod('GET');
+    signosById.addMethod('PUT',new LambdaIntegration(signosLambda),{authorizer:authorizer});
+    signosById.addMethod('GET',new LambdaIntegration(signosLambda),{authorizer:authorizer});
     //const signosByPaciente = signos.addResource('paciente').addResource('{idPaciente}')
     //signosByPaciente.addMethod('GET')
   }
@@ -171,19 +211,27 @@ export class SwApiGateway extends Construct{
         allowOrigins: ['*'],
       }
     });
+    /*const authorizer = new CognitoUserPoolsAuthorizer(this,'PerfilAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });*/
+    
     const perfil = apiGwPerfil.root.addResource('perfil');
+    //perfil.addMethod('GET',new LambdaIntegration(perfilLambda),{authorizer:authorizer});
     perfil.addMethod('GET');
+    //perfil.addMethod('POST',new LambdaIntegration(perfilLambda),{authorizer:authorizer});
     perfil.addMethod('POST');
     const perfilById = perfil.addResource('{idPerfil}');
+    //perfilById.addMethod('PUT',new LambdaIntegration(perfilLambda),{authorizer:authorizer});
+    //perfilById.addMethod('DELETE',new LambdaIntegration(perfilLambda),{authorizer:authorizer});
     perfilById.addMethod('PUT');
     perfilById.addMethod('DELETE');
   }
 
   private createApigUsuario(usuarioLambda:IFunction){
-    const apiGwPerfil = new LambdaRestApi(this, 'UsuarioApiGw', {
+    const apiGwPerfil = new RestApi(this, 'UsuarioApiGw', {
       restApiName: 'Usuario Service',
-      handler: usuarioLambda,
-      proxy: false,
+      //handler: usuarioLambda,
+      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -199,10 +247,12 @@ export class SwApiGateway extends Construct{
         allowOrigins: ['*'],
       }
     });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'UsuarioAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
     const usuario = apiGwPerfil.root.addResource('usuario');
-    usuario.addMethod('GET');
+    usuario.addMethod('GET',new LambdaIntegration(usuarioLambda),{authorizer:authorizer});
     const perfilById = usuario.addResource('{idUsuario}').addResource('{email}');
-    perfilById.addMethod('DELETE');
-
+    perfilById.addMethod('DELETE',new LambdaIntegration(usuarioLambda),{authorizer:authorizer});
   }
 }

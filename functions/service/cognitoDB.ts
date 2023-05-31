@@ -6,7 +6,6 @@ const cognitoDB = (mongoUri:any)=>{
 
   return {
     saveNewUser:(params:any)=>{
-      console.log('Va a guardar el usuario',params);
       return new Usuario({
         nombre: params.given_name,
         apellidoP: params.middle_name,
@@ -24,7 +23,7 @@ const cognitoDB = (mongoUri:any)=>{
       })
       .save()
       .then((savedCognito:any)=>{
-        console.log('Se guardo el usuario');
+        //console.log('Se guardo el usuario');
         return {usuario:savedCognito};
       })
       .catch((err:any)=>{

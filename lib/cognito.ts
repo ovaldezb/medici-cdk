@@ -6,12 +6,12 @@ import { RemovalPolicy } from "aws-cdk-lib";
 
 export class SwCognito extends Construct{
 
-  public userPool:cognito.UserPool;
+  public clinicaUserPool:cognito.UserPool;
 
   constructor(scope: Construct, id: string, cognitoLambda:NodejsFunction){
     super(scope,id);
    
-    this.userPool = new cognito.UserPool(this,'UserPool',{
+    this.clinicaUserPool = new cognito.UserPool(this,'UserPool',{
       userPoolName: 'clinicaUserPool',
       selfSignUpEnabled: true,
       signInAliases: {
@@ -61,36 +61,33 @@ export class SwCognito extends Construct{
         requireSymbols: false,
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      removalPolicy: RemovalPolicy.RETAIN,
-      /*lambdaTriggers:{
-        postConfirmation:cognitoLambda
-      }*/
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    this.userPool.addClient('Medici App',{
+    this.clinicaUserPool.addClient('Medici App',{
       supportedIdentityProviders:[]
     })
 
     new cognito.CfnUserPoolGroup(this,'Medico Group',{
-      groupName:'medico',
-      userPoolId:this.userPool.userPoolId
+      groupName:'MEDICO',
+      userPoolId:this.clinicaUserPool.userPoolId
     });
 
     new cognito.CfnUserPoolGroup(this,'Enfermera Group',{
-      groupName:'enfermera',
-      userPoolId:this.userPool.userPoolId
+      groupName:'ENFERMERA',
+      userPoolId:this.clinicaUserPool.userPoolId
     });
 
     new cognito.CfnUserPoolGroup(this,'Recepcion Group',{
-      groupName:'recepcion',
-      userPoolId:this.userPool.userPoolId
+      groupName:'RECEPCION',
+      userPoolId:this.clinicaUserPool.userPoolId
     });
 
     new cognito.CfnUserPoolGroup(this,'Administración Group',{
-      groupName:'administracion',
-      userPoolId:this.userPool.userPoolId
+      groupName:'ADMINISTRADOR',
+      userPoolId:this.clinicaUserPool.userPoolId
     });
 
-    this.userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION,cognitoLambda);
+    this.clinicaUserPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION,cognitoLambda);
   }
 }

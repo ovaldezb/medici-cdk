@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { SwCognito } from './cognito';
 import { SwLambdaFunctions } from './lambdaFunctions';
@@ -11,7 +12,19 @@ export class MediciCdkStack extends cdk.Stack {
     super(scope, id, props);    
     const lambdaFunctions = new SwLambdaFunctions(this,'LambdaFUnctions');
     const cognitoPool = new SwCognito(this,'ClinicaCognitoPool',lambdaFunctions.cognitoLambda);
-    const usuarioLambda = new SwUsuarioLambdaFunction(this,'UsuarioLambdaFnction',cognitoPool.userPool.userPoolId);
+    
+    const cognitoAddUserPolicy = new iam.PolicyStatement({
+      effect:iam.Effect.ALLOW,
+      actions:['cognito-idp:AdminAddUserToGroup'],
+      resources:[cognitoPool.clinicaUserPool.userPoolArn],
+    });
+    
+    lambdaFunctions.cognitoLambda.role?.attachInlinePolicy(new iam.Policy(this,'CognitoAddUserToGroup',{
+      statements:[cognitoAddUserPolicy]
+    }));
+    
+    const usuarioLambda = new SwUsuarioLambdaFunction(this,'UsuarioLambdaFnction',cognitoPool.clinicaUserPool.userPoolId);
+    
     new SwApiGateway(this,'ApiGW',{
       citasLambda:    lambdaFunctions.citasLambda,
       medicosLambda:  lambdaFunctions.medicosLambda,
@@ -19,6 +32,8 @@ export class MediciCdkStack extends cdk.Stack {
       signosLambda:   lambdaFunctions.signosLambda,
       perfilLambda: lambdaFunctions.perfilLambda,
       usuarioLambda: usuarioLambda.usuariosLambda
-    });
+      },
+      cognitoPool.clinicaUserPool
+      );
   }
 }

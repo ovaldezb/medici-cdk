@@ -62,12 +62,11 @@ async function getMedicoById(idMedico:string){
 async function getAllMedicos() {
   const medicos = await db.getAllMedicos();
   if(medicos === null){
-    var errMessage = {
-      message:'No existen medico para este id'
-    };
     return{
       statusCode: 404,
-      body: JSON.stringify(errMessage),
+      body: JSON.stringify({
+        message:'Error al recuperar los Médicos'
+      }),
       headers:headers
     }  
   }

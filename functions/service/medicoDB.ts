@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const Medico = require('../models/medico');
+const Usuario = require('../models/usuario');
 
 const medicoDB = (mongoUri:string)=>{
   const connectionHandler = mongoose.connect(mongoUri);
@@ -24,7 +25,7 @@ const medicoDB = (mongoUri:string)=>{
       });
     },
     getAllMedicos:()=>{
-      return Medico.find()
+      return Usuario.find({perfil:'MEDICO'})
       .then((medicos:any) =>{
         return {medicos:medicos};
       })
