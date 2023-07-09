@@ -8,7 +8,6 @@ const headers ={
 };
 
 export const handler = async function(event:any) {
-  console.log(event);
   const method = event.requestContext.httpMethod;
   switch(method){
     case 'GET' :
@@ -68,12 +67,11 @@ async function findPacienteByNombre(event:any) {
 async function findPacienteById(idPaciente:string){
   const paciente = await db.findPacienteById(idPaciente);
   if(paciente===null){
-    var errMessage = {
-      message:'No existen medico para este id'
-    };
     return{
       statusCode: 404,
-      body: JSON.stringify(errMessage),
+      body: JSON.stringify({
+        message:'No existen paciente para este id'
+      }),
       headers:headers
     }
   }

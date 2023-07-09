@@ -19,7 +19,9 @@ const cognitoDB = (mongoUri:any)=>{
         cedula: params['custom:cedula'],
         isAdmin: params['custom:isAdmin'],
         rfc : params['custom:rfc'],
-        especialidad: params['custom:especialidad']
+        especialidad: params['custom:especialidad'],
+        isDisabled: params['custom:isDisabled'],
+        sucursal: params['custom:sucursal']
       })
       .save()
       .then((savedCognito:any)=>{

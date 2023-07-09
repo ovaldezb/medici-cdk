@@ -1,6 +1,5 @@
 import { Construct } from "constructs";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as cdk from 'aws-cdk-lib';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { RemovalPolicy } from "aws-cdk-lib";
 
@@ -50,8 +49,10 @@ export class SwCognito extends Construct{
         perfil: new cognito.StringAttribute({mutable: true}),
         cedula: new cognito.StringAttribute({mutable: true}),
         especialidad: new cognito.StringAttribute({mutable: true}),
-        isAdmin: new cognito.StringAttribute({mutable: true}),
+        isAdmin: new cognito.BooleanAttribute({mutable: true}),
         rfc : new cognito.StringAttribute({mutable: true}),
+        isDisabled : new cognito.BooleanAttribute({mutable:true}),
+        sucursal: new cognito.StringAttribute({mutable:true})
       },
       passwordPolicy: {
         minLength: 6,
@@ -61,7 +62,7 @@ export class SwCognito extends Construct{
         requireSymbols: false,
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      removalPolicy: RemovalPolicy.DESTROY,
+      removalPolicy: RemovalPolicy.RETAIN,
     });
 
     this.clinicaUserPool.addClient('Medici App',{

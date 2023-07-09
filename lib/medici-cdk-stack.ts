@@ -5,7 +5,6 @@ import { SwCognito } from './cognito';
 import { SwLambdaFunctions } from './lambdaFunctions';
 import { SwApiGateway } from './apiGateway';
 import { SwUsuarioLambdaFunction } from './usuarioLambdaFunction';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class MediciCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -22,18 +21,31 @@ export class MediciCdkStack extends cdk.Stack {
     lambdaFunctions.cognitoLambda.role?.attachInlinePolicy(new iam.Policy(this,'CognitoAddUserToGroup',{
       statements:[cognitoAddUserPolicy]
     }));
-    
+
     const usuarioLambda = new SwUsuarioLambdaFunction(this,'UsuarioLambdaFnction',cognitoPool.clinicaUserPool.userPoolId);
+
+    const usuarioDisableUserPolicy = new iam.PolicyStatement({
+      effect:iam.Effect.ALLOW,
+      actions:['cognito-idp:AdminDisableUser','cognito-idp:AdminEnableUser'],
+      resources:[cognitoPool.clinicaUserPool.userPoolArn],
+    });
+    
+    usuarioLambda.usuariosLambda.role?.attachInlinePolicy(new iam.Policy(this,'UsuarioCognitoDisableUser',{
+      statements:[usuarioDisableUserPolicy]
+    }));
     
     new SwApiGateway(this,'ApiGW',{
-      citasLambda:    lambdaFunctions.citasLambda,
-      medicosLambda:  lambdaFunctions.medicosLambda,
-      pacientesLambda:lambdaFunctions.pacientesLambda,
-      signosLambda:   lambdaFunctions.signosLambda,
-      perfilLambda: lambdaFunctions.perfilLambda,
-      usuarioLambda: usuarioLambda.usuariosLambda
+        citasLambda:    lambdaFunctions.citasLambda,
+        medicosLambda:  lambdaFunctions.medicosLambda,
+        pacientesLambda:lambdaFunctions.pacientesLambda,
+        signosLambda:   lambdaFunctions.signosLambda,
+        perfilLambda: lambdaFunctions.perfilLambda,
+        usuarioLambda: usuarioLambda.usuariosLambda,
+        whatsAppLambda: lambdaFunctions.wahstAppLambda,
+        sucursalLambda: lambdaFunctions.sucursalLambda,
+        carnetLambda: lambdaFunctions.carnetLambda
       },
       cognitoPool.clinicaUserPool
-      );
+    );
   }
 }

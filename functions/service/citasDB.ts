@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const Cita = require('../models/citas');
-require('../models/medico');
+require('../models/usuario');
 require('../models/signos');
 require('../models/paciente');
 
@@ -23,7 +23,7 @@ const citaDB = (mongoUri:string)=>{
       })
       .catch((err:any)=>{
         console.log(err);
-        return err;
+        return {error:err};
       })
     },
     getCitasByFecha:(fechaFiltro:string)=>{
@@ -57,7 +57,8 @@ const citaDB = (mongoUri:string)=>{
         return {citas:allCitas};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       });
       
     },
@@ -67,7 +68,8 @@ const citaDB = (mongoUri:string)=>{
         return {cita:citaUpdate};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       });
     },
     deleteCita:(idCita:string)=>{
@@ -76,7 +78,8 @@ const citaDB = (mongoUri:string)=>{
         return deleteCita;
       })
       .catch((err:any) =>{
-        return err;
+        console.log(err);
+        return {error:err};
       })
     }
   }

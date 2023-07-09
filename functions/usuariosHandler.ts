@@ -13,9 +13,13 @@ export const handler = async function(event:any) {
   switch(method){
     case 'GET':
       return getAllUsuarios(event);
-    case 'DELETE':
-      deleteUsuarioFromCognito(event);
-      return deleteUsuario(event);
+    case 'PUT':
+      if(event.pathParameters.isDisabled==='true'){
+        disableUsuarioFromCognito(event);
+      }else{
+        enableUsuarioFromCognito(event);
+      }
+      return updateUsuario(event);
     default:
       throw new Error('Unsupported route '+method);
   }
@@ -27,7 +31,7 @@ async function getAllUsuarios(params:any) {
     return{
       statusCode: 404,
       body: JSON.stringify({
-        message:'No existen medico para este id'
+        message:'Error al tratar de traer todos los usuarios'
       }),
       headers:headers
     }
@@ -39,10 +43,11 @@ async function getAllUsuarios(params:any) {
   }
 }
 
-async function deleteUsuario(event:any) {
-  const idUsuario = event.pathParameters.idusuario;
-  const deleteUsuario = await db.deleteUserDB(idUsuario);
-  if(deleteUsuario.error != null || deleteUsuario === null){
+async function updateUsuario(event:any) {
+  const idUsuario = event.pathParameters.idUsuario;
+  const body = JSON.parse(event.body);
+  const updateUsuario = await db.updateUserDB(idUsuario,body);
+  if(updateUsuario.error != null || updateUsuario === null){
     return{
       statusCode: 404,
       body: JSON.stringify({
@@ -53,12 +58,13 @@ async function deleteUsuario(event:any) {
   }
   return{
     statusCode: 200,
-    body: JSON.stringify(deleteUsuario),
+    body: JSON.stringify(updateUsuario),
     headers:headers
   }
 }
 
-async function deleteUsuarioFromCognito(event:any) {
+async function disableUsuarioFromCognito(event:any) {
+  console.log('disable user');
   const cognito = new AWS.CognitoIdentityServiceProvider({
     apiVersion: "2016-04-18",
   });
@@ -68,6 +74,19 @@ async function deleteUsuarioFromCognito(event:any) {
       UserPoolId: USERPOOLID,
       Username: EMAIL
   };
-  let response = await cognito.adminDeleteUser(cognitoParams).promise();
-  console.log(JSON.stringify(response, null, 2));
+  await cognito.adminDisableUser(cognitoParams).promise();
+}
+
+async function enableUsuarioFromCognito(event:any) {
+  console.log('enableUser');
+  const cognito = new AWS.CognitoIdentityServiceProvider({
+    apiVersion: "2016-04-18",
+  });
+  const USERPOOLID = process.env.USER_POOL_ID;
+  const EMAIL = event.pathParameters.email;
+  const cognitoParams = {
+      UserPoolId: USERPOOLID,
+      Username: EMAIL
+  };
+  await cognito.adminEnableUser(cognitoParams).promise();
 }

@@ -10,7 +10,10 @@ interface SwApiGatewaysProps{
   pacientesLambda:IFunction,
   signosLambda: IFunction,
   perfilLambda: IFunction,
-  usuarioLambda: IFunction
+  usuarioLambda: IFunction,
+  whatsAppLambda: IFunction,
+  sucursalLambda: IFunction,
+  carnetLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -25,6 +28,9 @@ export class SwApiGateway extends Construct{
     this.createApigSignos(props.signosLambda);
     this.createApigPerfil(props.perfilLambda);
     this.createApigUsuario(props.usuarioLambda);
+    this.createApigWhatsApp(props.whatsAppLambda);
+    this.createApigSucursal(props.sucursalLambda);
+    this.createApigCarnet(props.carnetLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -88,8 +94,6 @@ export class SwApiGateway extends Construct{
   private createApigMedicos(medicosLambda:IFunction){
     const apiGwMedico = new RestApi(this, 'MedicoApiGw', {
       restApiName: 'Medico Service',
-      //handler: medicosLambda,
-      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -111,19 +115,14 @@ export class SwApiGateway extends Construct{
     });
 
     const medico = apiGwMedico.root.addResource('medico');
-    medico.addMethod('POST',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
     medico.addMethod('GET',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
-    const actionMedicoById = medico.addResource('{idMedico}');
+    const actionMedicoById = medico.addResource('{email}');
     actionMedicoById.addMethod('GET',new LambdaIntegration(medicosLambda),{authorizer:authorizer});
-    actionMedicoById.addMethod('PUT', new LambdaIntegration(medicosLambda),{authorizer:authorizer});
-    actionMedicoById.addMethod('DELETE', new LambdaIntegration(medicosLambda),{authorizer:authorizer});
   }
 
   private createApigPaciente(pacienteLambda:IFunction){
     const apiGwPaciente = new RestApi(this, 'PacienteApiGw', {
       restApiName: 'Paciente Service',
-      //handler: pacienteLambda,
-      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -160,8 +159,6 @@ export class SwApiGateway extends Construct{
   private createApigSignos(signosLambda:IFunction){
     const apiGwSignos = new RestApi(this, 'SignosApiGw', {
       restApiName: 'Signos Service',
-      //handler: signosLambda,
-      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -230,8 +227,6 @@ export class SwApiGateway extends Construct{
   private createApigUsuario(usuarioLambda:IFunction){
     const apiGwPerfil = new RestApi(this, 'UsuarioApiGw', {
       restApiName: 'Usuario Service',
-      //handler: usuarioLambda,
-      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
@@ -252,7 +247,79 @@ export class SwApiGateway extends Construct{
     });
     const usuario = apiGwPerfil.root.addResource('usuario');
     usuario.addMethod('GET',new LambdaIntegration(usuarioLambda),{authorizer:authorizer});
-    const perfilById = usuario.addResource('{idUsuario}').addResource('{email}');
-    perfilById.addMethod('DELETE',new LambdaIntegration(usuarioLambda),{authorizer:authorizer});
+    const perfilById = usuario.addResource('{idUsuario}').addResource('{email}').addResource('{isDisabled}');
+    perfilById.addMethod('PUT',new LambdaIntegration(usuarioLambda),{authorizer:authorizer});
+  }
+
+  private createApigWhatsApp(whatsAppLambda:IFunction){
+    const apigWhatsApp = new LambdaRestApi(this,'WhatsAppApiG',{
+      restApiName:'WhatsAppLambda',
+      handler: whatsAppLambda,
+      proxy: false,
+      deployOptions: {
+        stageName: 'dev'
+      },
+    });
+    const endpoint = apigWhatsApp.root.addResource('webhook');
+    endpoint.addMethod('POST');
+    endpoint.addMethod('GET');
+  }
+
+  private createApigSucursal(sucursalLambda:IFunction){
+    const apiGwPerfil = new RestApi(this, 'SucursalApiGw', {
+      restApiName: 'SucursalService',
+      deployOptions: {
+        stageName: 'dev'
+      },
+      defaultCorsPreflightOptions: {
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowCredentials: true,
+        allowOrigins: ['*'],
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'SucursalAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const sucursal = apiGwPerfil.root.addResource('sucursal');
+    sucursal.addMethod('GET',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
+    sucursal.addMethod('POST',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
+    const sucursalById = sucursal.addResource('{idSucursal}');
+    sucursalById.addMethod('PUT',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
+    sucursalById.addMethod('DELETE',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
+  }
+
+  private createApigCarnet(carnetLambda:IFunction){
+    const apiGwPerfil = new RestApi(this, 'CarnetApiGw', {
+      restApiName: 'CarnetlService',
+      deployOptions: {
+        stageName: 'dev'
+      },
+      defaultCorsPreflightOptions: {
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowCredentials: true,
+        allowOrigins: ['*'],
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'CarnetAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const carnet = apiGwPerfil.root.addResource('carnet');
+    carnet.addMethod('GET',new LambdaIntegration(carnetLambda),{authorizer:authorizer});
+    carnet.addMethod('POST',new LambdaIntegration(carnetLambda),{authorizer:authorizer});
+    const carnetById = carnet.addResource('{carnetId}');
+    carnetById.addMethod('GET',new LambdaIntegration(carnetLambda),{authorizer:authorizer});
+    carnetById.addMethod('PUT', new LambdaIntegration(carnetLambda),{authorizer:authorizer});
   }
 }

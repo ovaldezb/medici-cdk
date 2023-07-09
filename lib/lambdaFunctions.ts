@@ -11,8 +11,10 @@ export class SwLambdaFunctions extends Construct{
   public readonly signosLambda:NodejsFunction;
   public readonly cognitoLambda:NodejsFunction;
   public readonly perfilLambda:NodejsFunction;
+  public readonly wahstAppLambda:NodejsFunction;
+  public readonly sucursalLambda:NodejsFunction;
+  public readonly carnetLambda:NodejsFunction;
   
-
   constructor(scope: Construct, id: string){
     super(scope, id);
 
@@ -34,6 +36,9 @@ export class SwLambdaFunctions extends Construct{
     this.signosLambda = this.createSignosLambda(nodeJSProps);
     this.cognitoLambda = this.createCognitoLambda(nodeJSProps);
     this.perfilLambda = this.createPerfilLambda(nodeJSProps);
+    this.wahstAppLambda = this.createWhatsAppLambda(nodeJSProps);
+    this.sucursalLambda = this.createSucursalLambda(nodeJSProps);
+    this.carnetLambda = this.createCarnetLambda(nodeJSProps);
   }
 
   private createCitasLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
@@ -88,5 +93,32 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJsProps
     });
     return perfilFunction;
+  }
+
+  private createWhatsAppLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const whatsAppFunction = new NodejsFunction(this,'WhatsAppFUnction',{
+      functionName:'WhatsAppFunction',
+      entry:join(__dirname,'/../functions/whatsAppHandler.ts'),
+      ...nodeJSProps
+    });
+    return whatsAppFunction;
+  }
+
+  private createSucursalLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const sucursalFunction = new NodejsFunction(this,'SucursalFUnction',{
+      functionName:'SucursalFunction',
+      entry:join(__dirname,'/../functions/sucursalHandler.ts'),
+      ...nodeJSProps
+    });
+    return sucursalFunction;
+  }
+
+  private createCarnetLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const carnetLambda = new NodejsFunction(this, 'CarnetLambda',{
+      functionName:'CarnetLambda',
+      entry:join(__dirname,'/../functions/carnetHandler.ts'),
+      ...nodeJSProps
+    });
+    return carnetLambda;
   }
 }

@@ -42,12 +42,11 @@ async function addCita(event:any){
 async function getCitasByFecha(fechaFiltro:string){
   const citas = await db.getCitasByFecha(fechaFiltro);
   if(citas === null){
-    var errMessage = {
-      message:'No existen citas para esta fecha'
-    };
     return{
       statusCode: 404,
-      body: JSON.stringify(errMessage),
+      body: JSON.stringify({
+        message:'No existen citas para esta fecha'
+      }),
       headers:headers
     }  
   }
@@ -61,12 +60,11 @@ async function getCitasByFecha(fechaFiltro:string){
 async function getCitasByFechaAndMedico(fechaFiltro:string, idMedico:string){
   const citas = await db.getCitasByFechaAndMedico(fechaFiltro, idMedico);
   if(citas === null){
-    var errMessage = {
-      message:'No existen citas para esta fecha'
-    };
     return{
       statusCode: 400,
-      body: JSON.stringify(errMessage),
+      body: JSON.stringify({
+        message:'No existen citas para esta fecha'
+      }),
       headers:headers
     }  
   }
@@ -82,39 +80,37 @@ async function updateCita(event:any){
   const idCita = event.pathParameters.parametro;
   const updateCita = await db.updateCita(idCita,body);
   if(updateCita===null){
-    let bodyMessage = {
-      message : 'No existen registros para actualizar'
-    };
     return{
       statusCode: 404,
-      body: JSON.stringify(bodyMessage),
+      body: JSON.stringify({
+        message : 'No existen registros para actualizar'
+      }),
       headers:headers
     }
-  }else{
+  }
     return{
       statusCode:200,
       body: JSON.stringify(updateCita),
       headers:headers,
     }
-  }
+  
 }
 
 async function deleteCita(idCita:string) {
   const delCita = await db.deleteCita(idCita);
   if(delCita===null){
-    let bodyMessage = {
-      message : 'No se pudo eliminar la cita'
-    };
     return{
       statusCode: 404,
-      body: JSON.stringify(bodyMessage),
+      body: JSON.stringify({
+        message : 'No se pudo eliminar la cita'
+      }),
       headers:headers
     }
-  }else{
+  }
     return{
       statusCode:200,
       body: JSON.stringify(delCita),
       headers:headers,
     }
-  }
+  
 }

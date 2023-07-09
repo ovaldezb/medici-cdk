@@ -14,10 +14,10 @@ const usuariosDB = (mongoUri:string)=>{
         return {error:error}
       })
     },
-    deleteUserDB:(idUsuario:string)=>{
-      return Usuario.findOneAndDelete({_id:idUsuario})
-      .then((deletedUsuario:any)=>{
-        return deletedUsuario;
+    updateUserDB:(idUsuario:string, usuario:any)=>{
+      return Usuario.findOneAndUpdate({_id:idUsuario},usuario,{new:true})
+      .then((updatedUsuario:any)=>{
+        return updatedUsuario;
       })
       .catch((error:any)=>{
         console.log(error);

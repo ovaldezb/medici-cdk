@@ -9,7 +9,6 @@ const headers ={
 
 export const handler = async function (event:any) {
   const method = event.requestContext.httpMethod;
-  console.log(event);
   switch(method){
     case 'GET' :
       if(event.pathParameters != null ){
