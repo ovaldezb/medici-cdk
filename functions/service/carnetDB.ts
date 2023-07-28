@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const Carnet = require('../models/carnet');
-//const Paciente = 
+const Folio = require('../models/folio');
 require('../models/paciente');
 require('../models/citas');
 
@@ -38,7 +38,7 @@ const carnetDB = (mongoUri:string)=>{
     getCarnetById:(idCarnet:string)=>{
       return Carnet.find(
         {
-          carnet:idCarnet
+          _id:idCarnet
         }
       )
       .then((carnet:any)=>{
@@ -58,8 +58,43 @@ const carnetDB = (mongoUri:string)=>{
         console.log(err);
         return{error:err}
       });
+    },
+    getFolio:(nombre:string)=>{
+      return Folio.findOneAndUpdate({'_id':nombre},{$inc:{sequence_value:1}},{new:true})
+      .then((folioFound:any)=>{
+        if(folioFound !=null && folioFound!= undefined && folioFound != ''){
+          const ff = folioFound.sequence_value
+          return {
+            folio:pad(ff,5,'0')
+          }
+        }else{
+          return new Folio({
+                  _id : nombre,
+                  sequence_value : 1
+                })
+          .save()
+          .then((folioSaved:any)=>{
+            return {
+              folio:pad(folioSaved.sequence_value,5,'0')
+            }
+          })
+          .catch((err:any)=>{
+            return {error:err}
+          })
+        }
+      })
+      .catch((err:any)=>{
+        console.log(err);
+        return {error:err}
+      })
     }
   }
+}
+
+const pad = (numero:number, width:number, fill:string)=>{
+  var z = fill || '0';
+  var n = numero + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
 module.exports = carnetDB;

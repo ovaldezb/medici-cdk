@@ -13,6 +13,8 @@ export const handler = async function (event:any) {
     case 'GET' :
       if(event.pathParameters != null && event.pathParameters.carnetId != null){
         return getCarnetById(event);
+      }else if(event.queryStringParameters != null && event.queryStringParameters.secuencia != null){
+        return getFolio(event);
       }else{
         return getCarnets();
       }
@@ -64,7 +66,7 @@ async function getCarnets() {
 
 async function getCarnetById(event:any) {
   const carnetId = event.pathParameters.carnetId;
-  const carnetById = db.getCarnetById(carnetId);
+  const carnetById = await db.getCarnetById(carnetId);
   if(carnetById===null || carnetById.error != null){
     return{
       statusCode: 400,
@@ -84,7 +86,7 @@ async function getCarnetById(event:any) {
 async function updateCarnet(event:any) {
   const carnetId = event.pathParameters.carnetId;
   const body = JSON.parse(event.body);
-  const updatedCarnet = db.updateCarnet(carnetId,body);
+  const updatedCarnet = await db.updateCarnet(carnetId,body);
   if(updatedCarnet === null || updatedCarnet.error != null){
     return{
       statusCode: 400,
@@ -97,6 +99,25 @@ async function updateCarnet(event:any) {
   return{
     statusCode: 200,
     body: JSON.stringify(updatedCarnet),
+    headers:headers
+  }
+}
+
+async function getFolio(event:any) {
+  const secuencia = event.queryStringParameters.secuencia; 
+  const folio = await db.getFolio(secuencia);
+  if(folio != null && folio.error != null){
+    return{
+      statusCode: 400,
+      body: JSON.stringify({
+        message:'Error al obtener el folio '
+      }),
+      headers:headers
+    }
+  }
+  return{
+    statusCode: 200,
+    body: JSON.stringify(folio),
     headers:headers
   }
 }

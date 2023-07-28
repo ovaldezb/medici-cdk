@@ -14,6 +14,7 @@ export class SwLambdaFunctions extends Construct{
   public readonly wahstAppLambda:NodejsFunction;
   public readonly sucursalLambda:NodejsFunction;
   public readonly carnetLambda:NodejsFunction;
+  public readonly enfermedadLambda:NodejsFunction;
   
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -39,6 +40,7 @@ export class SwLambdaFunctions extends Construct{
     this.wahstAppLambda = this.createWhatsAppLambda(nodeJSProps);
     this.sucursalLambda = this.createSucursalLambda(nodeJSProps);
     this.carnetLambda = this.createCarnetLambda(nodeJSProps);
+    this.enfermedadLambda = this.createEnfermedadLambda(nodeJSProps);
   }
 
   private createCitasLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
@@ -120,5 +122,14 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return carnetLambda;
+  }
+
+  private createEnfermedadLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const enfermedadLambda = new NodejsFunction(this,'EnfermedadLambda',{
+      functionName:'EnfermedadLambda',
+      entry:join(__dirname,'/../functions/enfermedadHandler.ts'),
+      ...nodeJSProps
+    });
+    return enfermedadLambda;
   }
 }

@@ -13,7 +13,8 @@ interface SwApiGatewaysProps{
   usuarioLambda: IFunction,
   whatsAppLambda: IFunction,
   sucursalLambda: IFunction,
-  carnetLambda: IFunction
+  carnetLambda: IFunction,
+  enfermedadLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -31,6 +32,7 @@ export class SwApiGateway extends Construct{
     this.createApigWhatsApp(props.whatsAppLambda);
     this.createApigSucursal(props.sucursalLambda);
     this.createApigCarnet(props.carnetLambda);
+    this.createApigEnfermedad(props.enfermedadLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -321,5 +323,31 @@ export class SwApiGateway extends Construct{
     const carnetById = carnet.addResource('{carnetId}');
     carnetById.addMethod('GET',new LambdaIntegration(carnetLambda),{authorizer:authorizer});
     carnetById.addMethod('PUT', new LambdaIntegration(carnetLambda),{authorizer:authorizer});
+  }
+
+  private createApigEnfermedad(enfermedadLambda:IFunction){
+    const apiGwEnfermedad = new RestApi(this, 'EnfermedadApiGw', {
+      restApiName: 'EnfermedadService',
+      deployOptions: {
+        stageName: 'dev'
+      },
+      defaultCorsPreflightOptions: {
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods: ['OPTIONS', 'GET'],
+        allowCredentials: true,
+        allowOrigins: ['*'],
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'EnfermedadAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const enfermedad = apiGwEnfermedad.root.addResource('enfermedad');
+    const enfermedadBySintomas = enfermedad.addResource('{sintomas}');
+    enfermedadBySintomas.addMethod('GET',new LambdaIntegration(enfermedadLambda),{authorizer:authorizer});
   }
 }

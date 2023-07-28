@@ -51,7 +51,8 @@ const pacienteDB = (mongoUri:string)=>{
         return {pacientes:listaPacienteMatch};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err)
+        return {error:err};
       });
     },
     findPacienteByApellido:(req:any)=>{
