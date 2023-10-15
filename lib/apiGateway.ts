@@ -323,6 +323,8 @@ export class SwApiGateway extends Construct{
     const carnetById = carnet.addResource('{carnetId}');
     carnetById.addMethod('GET',new LambdaIntegration(carnetLambda),{authorizer:authorizer});
     carnetById.addMethod('PUT', new LambdaIntegration(carnetLambda),{authorizer:authorizer});
+    const updateCarnetByFolio = carnetById.addResource('{amount}');
+    updateCarnetByFolio.addMethod('PATCH', new LambdaIntegration(carnetLambda),{authorizer:authorizer});
   }
 
   private createApigEnfermedad(enfermedadLambda:IFunction){

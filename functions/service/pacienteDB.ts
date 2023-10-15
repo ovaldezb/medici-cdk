@@ -11,7 +11,8 @@ const pacienteDB = (mongoUri:string)=>{
     savePaciente:(paciente:any)=>{
       return new Paciente({
         nombre : paciente.nombre,
-        apellido : paciente.apellido,
+        apellidoP : paciente.apellidoP,
+        apellidoM : paciente.apellidoM,
         telefono : paciente.telefono,
         fechaNacimiento : paciente.fechaNacimiento,
         estatura : paciente.estatura,
@@ -57,7 +58,7 @@ const pacienteDB = (mongoUri:string)=>{
     },
     findPacienteByApellido:(req:any)=>{
       var lookUpApellido = req.pathParameters.apellido;
-      return Paciente.find({apellido:{$regex:'^'+lookUpApellido,$options: 'i' },})
+      return Paciente.find({apellidoP:{$regex:'^'+lookUpApellido,$options: 'i' },})
       .then((listaPacienteMatch:any) =>{
         return {pacientes:listaPacienteMatch};
       })

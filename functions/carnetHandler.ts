@@ -22,6 +22,8 @@ export const handler = async function (event:any) {
       return addCarnet(event);
     case 'PUT' :
       return updateCarnet(event);
+    case 'PATCH' :
+      return updateCarnetCitas(event);
     default:
       throw new Error('Unsupported route '+method)
   }
@@ -118,6 +120,26 @@ async function getFolio(event:any) {
   return{
     statusCode: 200,
     body: JSON.stringify(folio),
+    headers:headers
+  }
+}
+
+async function updateCarnetCitas(event:any) {
+  const folio = event.pathParameters.carnetId;
+  const amount = event.pathParameters.amount;
+  const carnetUpdate = await db.updateCarnetCitas(folio, amount);
+  if(carnetUpdate != null && carnetUpdate.error != null){
+    return{
+      statusCode: 400,
+      body: JSON.stringify({
+        message:'Error al modificar las citas en el carnet el folio '+carnetUpdate.error
+      }),
+      headers:headers
+    }
+  }
+  return {
+    statusCode: 200,
+    body: JSON.stringify(carnetUpdate),
     headers:headers
   }
 }
