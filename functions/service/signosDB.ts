@@ -10,10 +10,16 @@ const signosDB = (mongoUri:string)=>{
       return  new Signos({
         paciente : params.paciente,
         peso : params.peso,
-        presionCis : params.presionCis,
+        estatura: params.estatura,
+        presionSis : params.presionSis,
         presionDias : params.presionDias,
         temperatura : params.temperatura,
         fechaToma : params.fechaToma,
+        frecuenciaCardiaca: params.frecuenciaCardiaca,
+        frecuenciaRespiratoria: params.frecuenciaRespiratoria,
+        spo2 : params.spo2,
+        glucotest: params.glucotest,
+        descripcion: params.descripcion
       }).save()
       .then((signosSaved:any) =>{
         return {signos:signosSaved};

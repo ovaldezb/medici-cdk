@@ -44,7 +44,9 @@ export class MediciCdkStack extends cdk.Stack {
         whatsAppLambda: lambdaFunctions.wahstAppLambda,
         sucursalLambda: lambdaFunctions.sucursalLambda,
         carnetLambda: lambdaFunctions.carnetLambda,
-        enfermedadLambda: lambdaFunctions.enfermedadLambda
+        enfermedadLambda: lambdaFunctions.enfermedadLambda,
+        medicamentoLambda: lambdaFunctions.medicamentoLambda,
+        disponibilidadLambda: lambdaFunctions.disponibilidadLambda
       },
       cognitoPool.clinicaUserPool
     );

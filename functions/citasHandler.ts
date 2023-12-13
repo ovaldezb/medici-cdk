@@ -25,7 +25,7 @@ export const handler = async function(event:any) {
     case 'DELETE':
       return deleteCita(event.pathParameters.parametro);
     default:
-      throw new Error('Unsupported route '+method);
+      throw new Error('Unsupported route ');
   }
 }
 
@@ -41,7 +41,7 @@ async function addCita(event:any){
 
 async function getCitasByFecha(fechaFiltro:string){
   const citas = await db.getCitasByFecha(fechaFiltro);
-  if(citas === null){
+  if(citas === null || citas.error!=null){
     return{
       statusCode: 404,
       body: JSON.stringify({

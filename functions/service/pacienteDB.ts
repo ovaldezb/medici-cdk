@@ -15,7 +15,6 @@ const pacienteDB = (mongoUri:string)=>{
         apellidoM : paciente.apellidoM,
         telefono : paciente.telefono,
         fechaNacimiento : paciente.fechaNacimiento,
-        estatura : paciente.estatura,
         correo: paciente.correo,
         sexo : paciente.sexo,
         carnet: paciente.carnet

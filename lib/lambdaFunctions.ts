@@ -15,7 +15,9 @@ export class SwLambdaFunctions extends Construct{
   public readonly sucursalLambda:NodejsFunction;
   public readonly carnetLambda:NodejsFunction;
   public readonly enfermedadLambda:NodejsFunction;
-  
+  public readonly medicamentoLambda:NodejsFunction;
+  public readonly disponibilidadLambda:NodejsFunction;
+
   constructor(scope: Construct, id: string){
     super(scope, id);
 
@@ -41,6 +43,8 @@ export class SwLambdaFunctions extends Construct{
     this.sucursalLambda = this.createSucursalLambda(nodeJSProps);
     this.carnetLambda = this.createCarnetLambda(nodeJSProps);
     this.enfermedadLambda = this.createEnfermedadLambda(nodeJSProps);
+    this.medicamentoLambda = this.createMedicamentoLambda(nodeJSProps);
+    this.disponibilidadLambda = this.createDisponibilidadLambda(nodeJSProps);
   }
 
   private createCitasLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
@@ -131,5 +135,23 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return enfermedadLambda;
+  }
+
+  private createMedicamentoLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const medicamentoLambda = new NodejsFunction(this,'MedicamentoLambda',{
+      functionName: 'MedicamentoLmabda',
+      entry:join(__dirname,'/../functions/medicamentoHandler.ts'),
+      ...nodeJSProps
+    });
+    return medicamentoLambda;
+  }
+
+  private createDisponibilidadLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const disponibilidadLambda = new NodejsFunction(this,'DisponibilidadLambda',{
+      functionName:'DisponibilidadLambda',
+      entry:join(__dirname,'/../functions/disponibHandler.ts'),
+      ...nodeJSProps
+    });
+    return disponibilidadLambda;
   }
 }

@@ -14,7 +14,9 @@ interface SwApiGatewaysProps{
   whatsAppLambda: IFunction,
   sucursalLambda: IFunction,
   carnetLambda: IFunction,
-  enfermedadLambda: IFunction
+  enfermedadLambda: IFunction,
+  medicamentoLambda: IFunction,
+  disponibilidadLambda:IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -33,11 +35,13 @@ export class SwApiGateway extends Construct{
     this.createApigSucursal(props.sucursalLambda);
     this.createApigCarnet(props.carnetLambda);
     this.createApigEnfermedad(props.enfermedadLambda);
+    this.createApigMedicamento(props.medicamentoLambda);
+    this.createApigDisponibilidad(props.disponibilidadLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
     const apiGwCitas = new RestApi(this, 'CitasApiGw', {
-      restApiName: 'Citas Service',
+      restApiName: 'CitasService',
       //handler: citasLambda,
       //proxy: false,
       deployOptions: {
@@ -95,7 +99,7 @@ export class SwApiGateway extends Construct{
 
   private createApigMedicos(medicosLambda:IFunction){
     const apiGwMedico = new RestApi(this, 'MedicoApiGw', {
-      restApiName: 'Medico Service',
+      restApiName: 'MedicoService',
       deployOptions: {
         stageName: 'dev'
       },
@@ -160,7 +164,7 @@ export class SwApiGateway extends Construct{
 
   private createApigSignos(signosLambda:IFunction){
     const apiGwSignos = new RestApi(this, 'SignosApiGw', {
-      restApiName: 'Signos Service',
+      restApiName: 'SignosService',
       deployOptions: {
         stageName: 'dev'
       },
@@ -192,7 +196,7 @@ export class SwApiGateway extends Construct{
 
   private createApigPerfil(perfilLambda:IFunction){
     const apiGwPerfil = new LambdaRestApi(this, 'PerfilApiGw', {
-      restApiName: 'Perfil Service',
+      restApiName: 'PerfilService',
       handler: perfilLambda,
       proxy: false,
       deployOptions: {
@@ -228,7 +232,7 @@ export class SwApiGateway extends Construct{
 
   private createApigUsuario(usuarioLambda:IFunction){
     const apiGwPerfil = new RestApi(this, 'UsuarioApiGw', {
-      restApiName: 'Usuario Service',
+      restApiName: 'UsuarioService',
       deployOptions: {
         stageName: 'dev'
       },
@@ -298,7 +302,7 @@ export class SwApiGateway extends Construct{
 
   private createApigCarnet(carnetLambda:IFunction){
     const apiGwPerfil = new RestApi(this, 'CarnetApiGw', {
-      restApiName: 'CarnetlService',
+      restApiName: 'CarnetService',
       deployOptions: {
         stageName: 'dev'
       },
@@ -351,5 +355,59 @@ export class SwApiGateway extends Construct{
     const enfermedad = apiGwEnfermedad.root.addResource('enfermedad');
     const enfermedadBySintomas = enfermedad.addResource('{sintomas}');
     enfermedadBySintomas.addMethod('GET',new LambdaIntegration(enfermedadLambda),{authorizer:authorizer});
+  }
+
+  private createApigMedicamento(medicamentoLambda:IFunction){
+    const apiGwMedicamento = new RestApi(this,'MedicamentoApiGw',{
+      restApiName:'MedicamentoService',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:[
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods: ['OPTIONS','GET','POST'],
+        allowCredentials: true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'MedicamentoAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const medicamento = apiGwMedicamento.root.addResource('medicamento');
+    medicamento.addMethod('POST', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer})
+    const medicamentoByNombre = medicamento.addResource('{nombre}');
+    medicamentoByNombre.addMethod('GET', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer});
+  }
+
+  private createApigDisponibilidad(disponibilidadLambda:IFunction){
+    const apiGwDisponibilidad = new RestApi(this,'DisponibilidadApiGw',{
+      restApiName:'Disponibilidad',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:[
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods:['OPTIONS','GET','POST'],
+        allowCredentials:true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'DisponibilidadAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const disponibilidad = apiGwDisponibilidad.root.addResource('disponibilidad');
+    disponibilidad.addMethod('POST', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
+    const dispoByMedicoAndDia = disponibilidad.addResource('{fechaIni}').addResource('{fechaFin}').addResource('{idMedico}');
+    dispoByMedicoAndDia.addMethod('GET', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer})
   }
 }
