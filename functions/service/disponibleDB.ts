@@ -29,14 +29,14 @@ const disponibleDB = (mongoUri: string)=>{
         })
         .populate('medico')
         .then((diasDispo:any)=>{
-          return {disponibiliad:diasDispo};
+          return {disponibilidad:diasDispo};
         })
         .catch((err:any)=>{
           console.log(err);
           return {error:err};
         })
     },
-    deleteDispoByDia:(idDispo:any)=>{
+    deleteDispoById:(idDispo:any)=>{
       return Disponibilidad.findOneAndDelete({_id:idDispo})
       .then((deletedDispo:any)=>{
         return deletedDispo;

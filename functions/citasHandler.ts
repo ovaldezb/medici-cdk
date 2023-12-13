@@ -98,7 +98,7 @@ async function updateCita(event:any){
 
 async function deleteCita(idCita:string) {
   const delCita = await db.deleteCita(idCita);
-  if(delCita===null){
+  if(delCita===null || delCita.error != null){
     return{
       statusCode: 404,
       body: JSON.stringify({

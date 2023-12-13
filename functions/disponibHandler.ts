@@ -15,6 +15,8 @@ export const handler = async function(event:any) {
       return addDisponibilidad(event);
     case 'GET':
       return getDispoByDiaAndMedico(event.pathParameters.fechaIni,event.pathParameters.fechaFin,event.pathParameters.idMedico);
+    case 'DELETE':
+      return deleteById(event.pathParameters.fechaIni);
     default:
       throw new Error('Unsupported Method');
   }
@@ -53,6 +55,24 @@ async function addDisponibilidad(event:any) {
   return {
     statusCode:200,
     body: JSON.stringify(savedDispo),
+    headers:headers
+  }
+}
+
+async function deleteById(idDisponibilidad:string) {
+  const deletedDispo = await db.deleteDispoById(idDisponibilidad);
+  if(deletedDispo === null || deletedDispo.error != null){
+    return {
+      statusCode:400,
+      body:JSON.stringify({
+        message:'Error al borrar la disponibilidad '+deletedDispo.error
+      }),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(deletedDispo),
     headers:headers
   }
 }

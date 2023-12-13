@@ -407,7 +407,11 @@ export class SwApiGateway extends Construct{
     });
     const disponibilidad = apiGwDisponibilidad.root.addResource('disponibilidad');
     disponibilidad.addMethod('POST', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
-    const dispoByMedicoAndDia = disponibilidad.addResource('{fechaIni}').addResource('{fechaFin}').addResource('{idMedico}');
-    dispoByMedicoAndDia.addMethod('GET', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer})
+    const dispoDeleteById = disponibilidad.addResource('{fechaIni}')
+    dispoDeleteById.addMethod('DELETE',new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
+    const dispoByDateAndId = dispoDeleteById.addResource('{fechaFin}').addResource('{idMedico}');
+    dispoByDateAndId.addMethod('GET', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer})
+    //const deleteByIdDisponibilidad = disponibilidad.addResource('{idDisponibilidad}');
+    //deleteByIdDisponibilidad.addMethod('DELETE', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
   }
 }
