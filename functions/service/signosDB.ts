@@ -19,7 +19,8 @@ const signosDB = (mongoUri:string)=>{
         frecuenciaRespiratoria: params.frecuenciaRespiratoria,
         spo2 : params.spo2,
         glucotest: params.glucotest,
-        descripcion: params.descripcion
+        descripcion: params.descripcion,
+        escalaDolor: params.escalaDolor
       }).save()
       .then((signosSaved:any) =>{
         return {signos:signosSaved};
@@ -31,7 +32,7 @@ const signosDB = (mongoUri:string)=>{
     updateSignos:(idSignos:string,signos:any)=>{
       return Signos.findOneAndUpdate({_id:idSignos},signos,{new:true})
       .then((signosUpdated:any) =>{
-        console.log('Updated',signosUpdated);
+        //console.log('Updated',signosUpdated);
         return {signos:signosUpdated};
       })
       .catch((err:any)=>{

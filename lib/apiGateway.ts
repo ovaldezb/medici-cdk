@@ -397,7 +397,7 @@ export class SwApiGateway extends Construct{
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods:['OPTIONS','GET','POST'],
+        allowMethods:['OPTIONS','GET','POST','DELETE'],
         allowCredentials:true,
         allowOrigins:['*']
       }
@@ -411,7 +411,5 @@ export class SwApiGateway extends Construct{
     dispoDeleteById.addMethod('DELETE',new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
     const dispoByDateAndId = dispoDeleteById.addResource('{fechaFin}').addResource('{idMedico}');
     dispoByDateAndId.addMethod('GET', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer})
-    //const deleteByIdDisponibilidad = disponibilidad.addResource('{idDisponibilidad}');
-    //deleteByIdDisponibilidad.addMethod('DELETE', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
   }
 }

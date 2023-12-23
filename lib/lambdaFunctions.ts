@@ -30,7 +30,7 @@ export class SwLambdaFunctions extends Construct{
       environment: {
         MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
       },
-      runtime: Runtime.NODEJS_16_X
+      runtime: Runtime.NODEJS_18_X
     }
 
     this.citasLambda = this.createCitasLambda(nodeJSProps);
