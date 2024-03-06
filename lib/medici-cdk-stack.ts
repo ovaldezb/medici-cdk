@@ -46,7 +46,8 @@ export class MediciCdkStack extends cdk.Stack {
         carnetLambda: lambdaFunctions.carnetLambda,
         enfermedadLambda: lambdaFunctions.enfermedadLambda,
         medicamentoLambda: lambdaFunctions.medicamentoLambda,
-        disponibilidadLambda: lambdaFunctions.disponibilidadLambda
+        disponibilidadLambda: lambdaFunctions.disponibilidadLambda,
+        preguntasLambda: lambdaFunctions.preguntasLambda
       },
       cognitoPool.clinicaUserPool
     );

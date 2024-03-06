@@ -17,6 +17,7 @@ export class SwLambdaFunctions extends Construct{
   public readonly enfermedadLambda:NodejsFunction;
   public readonly medicamentoLambda:NodejsFunction;
   public readonly disponibilidadLambda:NodejsFunction;
+  public readonly preguntasLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -45,6 +46,7 @@ export class SwLambdaFunctions extends Construct{
     this.enfermedadLambda = this.createEnfermedadLambda(nodeJSProps);
     this.medicamentoLambda = this.createMedicamentoLambda(nodeJSProps);
     this.disponibilidadLambda = this.createDisponibilidadLambda(nodeJSProps);
+    this.preguntasLambda = this.createPreguntasLambda(nodeJSProps);
   }
 
   private createCitasLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
@@ -153,5 +155,14 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return disponibilidadLambda;
+  }
+
+  private createPreguntasLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const preguntasLambda = new NodejsFunction(this,'PreguntasLambda',{
+      functionName:'PreguntasLambda',
+      entry:join(__dirname,'/../functions/preguntasHandler.ts'),
+      ...nodeJSProps
+    });
+    return preguntasLambda;
   }
 }

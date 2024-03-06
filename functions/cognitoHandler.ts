@@ -1,6 +1,6 @@
 const database = require('./service/cognitoDB');
 const db = database(process.env.MONGODB_URI);
-const AWS = require('aws-sdk');
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 
 export const handler = async function(event:any) {
   const params = event.request;
@@ -12,7 +12,7 @@ export const handler = async function(event:any) {
     UserPoolId: userPoolId,
     Username: userName,
   };
-  const cognitoIdp = new AWS.CognitoIdentityServiceProvider();
-  await cognitoIdp.adminAddUserToGroup(paramsGroup).promise();
+  const cognitoIdp = new CognitoIdentityProvider();
+  await cognitoIdp.adminAddUserToGroup(paramsGroup);
   return event; 
 }

@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 const database = require('./service/usuarioDB');
 const db = database(process.env.MONGODB_URI);
 const headers ={
@@ -65,7 +65,7 @@ async function updateUsuario(event:any) {
 
 async function disableUsuarioFromCognito(event:any) {
   console.log('disable user');
-  const cognito = new AWS.CognitoIdentityServiceProvider({
+  const cognito = new CognitoIdentityProvider({
     apiVersion: "2016-04-18",
   });
   const USERPOOLID = process.env.USER_POOL_ID;
@@ -74,12 +74,12 @@ async function disableUsuarioFromCognito(event:any) {
       UserPoolId: USERPOOLID,
       Username: EMAIL
   };
-  await cognito.adminDisableUser(cognitoParams).promise();
+  await cognito.adminDisableUser(cognitoParams);
 }
 
 async function enableUsuarioFromCognito(event:any) {
-  console.log('enableUser');
-  const cognito = new AWS.CognitoIdentityServiceProvider({
+  //console.log('enableUser');
+  const cognito = new CognitoIdentityProvider({
     apiVersion: "2016-04-18",
   });
   const USERPOOLID = process.env.USER_POOL_ID;
@@ -88,5 +88,5 @@ async function enableUsuarioFromCognito(event:any) {
       UserPoolId: USERPOOLID,
       Username: EMAIL
   };
-  await cognito.adminEnableUser(cognitoParams).promise();
+  await cognito.adminEnableUser(cognitoParams);
 }

@@ -16,7 +16,8 @@ interface SwApiGatewaysProps{
   carnetLambda: IFunction,
   enfermedadLambda: IFunction,
   medicamentoLambda: IFunction,
-  disponibilidadLambda:IFunction
+  disponibilidadLambda:IFunction,
+  preguntasLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -37,6 +38,7 @@ export class SwApiGateway extends Construct{
     this.createApigEnfermedad(props.enfermedadLambda);
     this.createApigMedicamento(props.medicamentoLambda);
     this.createApigDisponibilidad(props.disponibilidadLambda);
+    this.createApiPreguntas(props.preguntasLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -411,5 +413,31 @@ export class SwApiGateway extends Construct{
     dispoDeleteById.addMethod('DELETE',new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer});
     const dispoByDateAndId = dispoDeleteById.addResource('{fechaFin}').addResource('{idMedico}');
     dispoByDateAndId.addMethod('GET', new LambdaIntegration(disponibilidadLambda),{authorizer:authorizer})
+  }
+
+  private createApiPreguntas(preguntasLambda:IFunction){
+    const apiGwPreguntas = new RestApi(this,'PreguntasApiGw',{
+      restApiName:'Preguntas',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:[
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods:['OPTIONS','GET'],
+        allowCredentials:true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'PreguntaAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const preguntas = apiGwPreguntas.root.addResource('preguntas');
+    const preguntasBySeccion = preguntas.addResource('{seccion}');
+    preguntasBySeccion.addMethod('GET', new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
   }
 }
