@@ -6,7 +6,7 @@ const preguntaDB = (mongoUri:string)=>{
   return {
     loadQuestions:(seccion:any)=>{
       return Pregunta.find({
-        seccion:{seccion}
+        seccion:seccion
       })
       .then((listaPreguntas:any)=>{
         return {preguntas:listaPreguntas}
