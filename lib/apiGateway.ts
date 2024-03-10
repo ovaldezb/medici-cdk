@@ -428,7 +428,7 @@ export class SwApiGateway extends Construct{
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods:['OPTIONS','GET'],
+        allowMethods:['OPTIONS','GET','POST','PUT'],
         allowCredentials:true,
         allowOrigins:['*']
       }
@@ -437,6 +437,9 @@ export class SwApiGateway extends Construct{
       cognitoUserPools:[this._clinicaCognito]
     });
     const preguntas = apiGwPreguntas.root.addResource('preguntas');
+    preguntas.addMethod('POST',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
+    const updtAntecedentesById = preguntas.addResource('{idAntecedente}');
+    updtAntecedentesById.addMethod('PUT',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
     const preguntasBySeccion = preguntas.addResource('{seccion}');
     preguntasBySeccion.addMethod('GET', new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
   }

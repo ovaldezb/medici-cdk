@@ -1,0 +1,710 @@
+{
+    "Users": [
+        {
+            "Username": "07a750c5-538c-4a0b-9755-6e2730ecff1f",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "07a750c5-538c-4a0b-9755-6e2730ecff1f"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1988/11/28"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "F"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "BAHF987979"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Fernanda"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Barbosa"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "ENFERMERA"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "54564566876"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Hernandez"
+                },
+                {
+                    "Name": "email",
+                    "Value": "omar_cio@hotmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T18:57:11.400000-06:00",
+            "UserLastModifiedDate": "2023-12-13T19:12:01.153000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        },
+        {
+            "Username": "2db4924f-dc67-4151-9d90-86eb2c13c7f4",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "2db4924f-dc67-4151-9d90-86eb2c13c7f4"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1981/05/12"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "F"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "REGA8112058I3"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Alejandra"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Garcia"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "ADMINISTRADOR"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "54789987678"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Reyes"
+                },
+                {
+                    "Name": "email",
+                    "Value": "ale1164reyga@hotmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "true"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:23:43.202000-06:00",
+            "UserLastModifiedDate": "2023-12-16T18:31:46.479000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        },
+        {
+            "Username": "594190a7-708b-4631-9332-de9d0527fe7b",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "594190a7-708b-4631-9332-de9d0527fe7b"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:especialidad",
+                    "Value": "Medico General"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1996/11/13"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "M"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "REGA811205"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Jose Maria"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Garcia"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "MEDICO"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "custom:cedula",
+                    "Value": "11089213"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "REyes"
+                },
+                {
+                    "Name": "email",
+                    "Value": "farmacomprasbb@hotmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:45:58.849000-06:00",
+            "UserLastModifiedDate": "2023-12-12T19:45:58.849000-06:00",
+            "Enabled": true,
+            "UserStatus": "RESET_REQUIRED"
+        },
+        {
+            "Username": "5bfa9ffe-5cce-439d-a64e-dffc53694472",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "5bfa9ffe-5cce-439d-a64e-dffc53694472"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1983/05/21"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "F"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "REGA830521RZ7"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Annel"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Garcia"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "RECEPCION"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Reyes"
+                },
+                {
+                    "Name": "email",
+                    "Value": "annelrgjd@hotmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:47:59.802000-06:00",
+            "UserLastModifiedDate": "2023-12-12T19:47:59.802000-06:00",
+            "Enabled": true,
+            "UserStatus": "RESET_REQUIRED"
+        },
+        {
+            "Username": "765c0be2-9da5-481e-b9c0-e599021d1c69",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "765c0be2-9da5-481e-b9c0-e599021d1c69"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1978/09/22"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "M"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "CASA987654"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Juan Gerardo"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Acosta"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "RECEPCION"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Rodriguez"
+                },
+                {
+                    "Name": "email",
+                    "Value": "omar.valdez@protonmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:39:28.896000-06:00",
+            "UserLastModifiedDate": "2023-12-13T15:36:42.625000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        },
+        {
+            "Username": "794f9c03-8ef8-4031-baaa-1feda7cd9632",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "794f9c03-8ef8-4031-baaa-1feda7cd9632"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:especialidad",
+                    "Value": "Medico General"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1989/08/18"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "M"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "ORGR98797"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Rogelio"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Gutierrez"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "MEDICO"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "custom:cedula",
+                    "Value": "7678668987"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Ortiz"
+                },
+                {
+                    "Name": "email",
+                    "Value": "omar.valdez.becerril@gmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:39:28.960000-06:00",
+            "UserLastModifiedDate": "2024-01-18T19:22:32.018000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        },
+        {
+            "Username": "79d282d9-03d0-4ab9-9d50-4d5465ee499c",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "79d282d9-03d0-4ab9-9d50-4d5465ee499c"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1978/07/11"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "M"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "VABO780711D41"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Omar"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Valdez"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "ADMINISTRADOR"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "+527223946832"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Becerril"
+                },
+                {
+                    "Name": "email",
+                    "Value": "omar.valdez@exatec.tec.mx"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "true"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T17:26:48.022000-06:00",
+            "UserLastModifiedDate": "2023-12-12T17:28:36.569000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        },
+        {
+            "Username": "86247c20-6c63-48c6-8552-df8a5233080d",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "86247c20-6c63-48c6-8552-df8a5233080d"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1993/11/19"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "M"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "REGJ931119D71"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Daniel"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Garcia"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "ADMINISTRADOR"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Reyes"
+                },
+                {
+                    "Name": "email",
+                    "Value": "juanda_sd@hotmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "true"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:39:28.942000-06:00",
+            "UserLastModifiedDate": "2023-12-12T19:39:28.942000-06:00",
+            "Enabled": true,
+            "UserStatus": "RESET_REQUIRED"
+        },
+        {
+            "Username": "a3154446-add4-484e-a4ec-427abf4607b2",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "a3154446-add4-484e-a4ec-427abf4607b2"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1981/05/12"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "F"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "REGA8112058I3"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Alejandra"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Garcia"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "ENFERMERA"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899096787"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Reyes"
+                },
+                {
+                    "Name": "email",
+                    "Value": "ale1164reygaviki@gmail.com"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:39:28.949000-06:00",
+            "UserLastModifiedDate": "2023-12-12T19:39:28.949000-06:00",
+            "Enabled": true,
+            "UserStatus": "RESET_REQUIRED"
+        },
+        {
+            "Username": "f153fa75-51a7-49d1-9e0a-8cdb0928f8f3",
+            "Attributes": [
+                {
+                    "Name": "sub",
+                    "Value": "f153fa75-51a7-49d1-9e0a-8cdb0928f8f3"
+                },
+                {
+                    "Name": "custom:isDisabled",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:especialidad",
+                    "Value": "Medico General"
+                },
+                {
+                    "Name": "birthdate",
+                    "Value": "1989/11/23"
+                },
+                {
+                    "Name": "email_verified",
+                    "Value": "true"
+                },
+                {
+                    "Name": "gender",
+                    "Value": "F"
+                },
+                {
+                    "Name": "phone_number_verified",
+                    "Value": "false"
+                },
+                {
+                    "Name": "custom:rfc",
+                    "Value": "FEGUA891123"
+                },
+                {
+                    "Name": "given_name",
+                    "Value": "Adrian"
+                },
+                {
+                    "Name": "middle_name",
+                    "Value": "Guillen"
+                },
+                {
+                    "Name": "custom:perfil",
+                    "Value": "MEDICO"
+                },
+                {
+                    "Name": "custom:sucursal",
+                    "Value": "SUC001"
+                },
+                {
+                    "Name": "custom:cedula",
+                    "Value": "2342432"
+                },
+                {
+                    "Name": "phone_number",
+                    "Value": "549899035345"
+                },
+                {
+                    "Name": "family_name",
+                    "Value": "Fernandez"
+                },
+                {
+                    "Name": "email",
+                    "Value": "vbomar@yahoo.com.mx"
+                },
+                {
+                    "Name": "custom:isAdmin",
+                    "Value": "false"
+                }
+            ],
+            "UserCreateDate": "2023-12-12T19:47:59.785000-06:00",
+            "UserLastModifiedDate": "2023-12-13T19:10:31.302000-06:00",
+            "Enabled": true,
+            "UserStatus": "CONFIRMED"
+        }
+    ]
+}

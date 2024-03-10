@@ -23,7 +23,8 @@ const pacienteDB = (mongoUri:string)=>{
         return {paciente:pacienteSaved};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       })
     },
     findAllPacientes:()=>{
@@ -32,7 +33,8 @@ const pacienteDB = (mongoUri:string)=>{
         return {pacientes:listaPacientes};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       });
     },
     findPacienteById:(idPaciente:string)=>{
@@ -41,6 +43,7 @@ const pacienteDB = (mongoUri:string)=>{
         return {paciente: paciente}
       })
       .catch((err:any)=>{
+        console.log(err);
         return {error:err}
       });
     },
@@ -62,7 +65,8 @@ const pacienteDB = (mongoUri:string)=>{
         return {pacientes:listaPacienteMatch};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       });
     },
     findPacienteByTelefono:(req:any)=>{
@@ -72,7 +76,8 @@ const pacienteDB = (mongoUri:string)=>{
         return {pacientes:listaPacienteMatch};
       })
       .catch((err:any)=>{
-        return err;
+        console.log(err);
+        return {error:err};
       });
     },
     updatePacienteDB:(req:any)=>{
@@ -83,7 +88,7 @@ const pacienteDB = (mongoUri:string)=>{
       })
       .catch((err:any)=>{
         console.log(err);
-        return err;
+        return {error:err};
       });
     },deletePacienteDB:(req:any)=>{
       let idPaciente = req.pathParameters.idPaciente;
@@ -93,7 +98,7 @@ const pacienteDB = (mongoUri:string)=>{
       })
       .catch((err:any)=>{
         console.log(err);
-        return err;
+        return {error:err};
       })
     }
   };

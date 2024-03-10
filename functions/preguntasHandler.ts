@@ -12,8 +12,12 @@ export const handler = async function(event:any){
   switch(method){
     case 'GET':
       return getPreguntas(event);
-      default:
-        throw new Error('Unsupported route '+method)
+    case 'POST':
+      return insertaAntecedentes(event);
+    case 'PUT':
+      return updtAntecedentes(event);
+    default:
+     throw new Error('Unsupported route '+method)
   }
 }
 
@@ -32,6 +36,41 @@ async function getPreguntas(event:any) {
   return {
     statusCode:200,
     body: JSON.stringify(listaPreguntas),
+    headers:headers
+  }
+}
+
+async function insertaAntecedentes(event:any) {
+  const body = JSON.parse(event.body);
+  const antecedInserted = await db.saveAntecedentes(body);
+  if(antecedInserted.error || antecedInserted=== null ){
+    return{
+      statusCode:400,
+      body:JSON.stringify({
+        message:'Error al guardar los antecedentes '+antecedInserted.error
+      }),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(antecedInserted),
+    headers:headers
+  }
+}
+
+async function updtAntecedentes(event:any) {
+  const antecedentesActualizados = await db.updateAntecedente(event);
+  if(antecedentesActualizados.error || antecedentesActualizados===null){
+    return {
+      statusCode:400,
+      body:JSON.stringify({message:'Error al actualizar antecedentes'}),
+      headers:headers
+    }
+  }
+  return {
+    statusCode:200,
+    body:JSON.stringify(antecedentesActualizados),
     headers:headers
   }
 }

@@ -36,6 +36,15 @@ export const handler = async function(event:any) {
 async function savePaciente(event:any) {
   const body = JSON.parse(event.body);
   const savedPaciente = await db.savePaciente(body);
+  if(savedPaciente.error || savePaciente===null){
+    return{
+      statusCode:400,
+      body: JSON.stringify({
+        message:'Error el guardar paciente'
+      }),
+      headers:headers
+    }
+  }
   return{
     statusCode: 200,
     body: JSON.stringify(savedPaciente),
@@ -46,6 +55,15 @@ async function savePaciente(event:any) {
 
 async function findAllPacientes() {
   const allPacientes = await db.findAllPacientes();
+  if(allPacientes.error || allPacientes===null){
+    return{
+      statusCode:400,
+      body: JSON.stringify({
+        message:'Error al recuperar todos los pacientes'
+      }),
+      headers:headers
+    }
+  }
   return{
     statusCode: 200,
     body: JSON.stringify(allPacientes),
@@ -66,7 +84,7 @@ async function findPacienteByNombre(event:any) {
 
 async function findPacienteById(idPaciente:string){
   const paciente = await db.findPacienteById(idPaciente);
-  if(paciente===null){
+  if(paciente.error || paciente===null){
     return{
       statusCode: 404,
       body: JSON.stringify({
