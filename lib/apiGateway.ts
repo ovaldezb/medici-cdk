@@ -17,7 +17,9 @@ interface SwApiGatewaysProps{
   enfermedadLambda: IFunction,
   medicamentoLambda: IFunction,
   disponibilidadLambda:IFunction,
-  preguntasLambda: IFunction
+  preguntasLambda: IFunction,
+  patologiaLambda: IFunction,
+  recetaLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -39,6 +41,8 @@ export class SwApiGateway extends Construct{
     this.createApigMedicamento(props.medicamentoLambda);
     this.createApigDisponibilidad(props.disponibilidadLambda);
     this.createApiPreguntas(props.preguntasLambda);
+    this.createApiPatologia(props.patologiaLambda);
+    this.createAPiReceta(props.recetaLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -438,9 +442,59 @@ export class SwApiGateway extends Construct{
     });
     const preguntas = apiGwPreguntas.root.addResource('preguntas');
     preguntas.addMethod('POST',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
-    const updtAntecedentesById = preguntas.addResource('{idAntecedente}');
-    updtAntecedentesById.addMethod('PUT',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
+    //const updtAntecedentesById = preguntas.addResource('{idAntecedente}');
+    //updtAntecedentesById.addMethod('PUT',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
     const preguntasBySeccion = preguntas.addResource('{seccion}');
     preguntasBySeccion.addMethod('GET', new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
+  }
+
+  private createApiPatologia(patologiaLambda:IFunction){
+    const apiGwPatologia = new RestApi(this,'PatologiaApiGw',{
+      restApiName:'Patologia',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:['Content-Type',
+        'X-Amz-Date',
+        'Authorization',
+        'X-Api-Key',],
+        allowMethods:['OPTIONS','GET'],
+        allowCredentials: true,
+        allowOrigins:['*']
+      }
+    });
+
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'PatologiaAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+
+    const patologia = apiGwPatologia.root.addResource('patologia');
+    patologia.addMethod('GET',new LambdaIntegration(patologiaLambda),{authorizer:authorizer}); //
+  }
+
+  private createAPiReceta(recetaLambda:IFunction){
+    const apiGwReceta = new RestApi(this,'RecetaApiGw',{
+      restApiName:'Receta',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:['Content-Type',
+        'X-Amz-Date',
+        'Authorization',
+        'X-Api-Key',],
+        allowMethods:['OPTIONS','GET','POST'],
+        allowCredentials:true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'RecetaAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    })
+    const receta = apiGwReceta.root.addResource('receta');
+    receta.addMethod('POST', new LambdaIntegration(recetaLambda),{authorizer:authorizer});
+    const recetaByIdPaciente = receta.addResource('{idPaciente}');
+    recetaByIdPaciente.addMethod('GET',new LambdaIntegration(recetaLambda),{authorizer:authorizer});
   }
 }

@@ -1,4 +1,4 @@
-import { Runtime } from "aws-cdk-lib/aws-lambda";
+import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction, NodejsFunctionProps } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { join } from "path";
@@ -18,6 +18,8 @@ export class SwLambdaFunctions extends Construct{
   public readonly medicamentoLambda:NodejsFunction;
   public readonly disponibilidadLambda:NodejsFunction;
   public readonly preguntasLambda:NodejsFunction;
+  public readonly patologiaLambda:NodejsFunction;
+  public readonly recetaLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -30,6 +32,20 @@ export class SwLambdaFunctions extends Construct{
       },
       environment: {
         MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+      },
+      runtime: Runtime.NODEJS_18_X
+    }
+
+    const nodeJSPropsNeo4j: NodejsFunctionProps ={
+      bundling: {
+        externalModules: [
+          'aws-sdk'
+        ]
+      },
+      environment: {
+        NEO4J_URI:`${process.env.NEO4J_URI}`,
+        NEO4J_USER:`${process.env.NEO4J_USER}`,
+        NEO4J_PASSWORD:`${process.env.NEO4J_PASSWORD}`
       },
       runtime: Runtime.NODEJS_18_X
     }
@@ -47,6 +63,26 @@ export class SwLambdaFunctions extends Construct{
     this.medicamentoLambda = this.createMedicamentoLambda(nodeJSProps);
     this.disponibilidadLambda = this.createDisponibilidadLambda(nodeJSProps);
     this.preguntasLambda = this.createPreguntasLambda(nodeJSProps);
+    this.patologiaLambda = this.createPatologiaLambda(nodeJSPropsNeo4j);
+    this.recetaLambda = this.createRecetaLambda(nodeJSProps);
+  }
+
+  private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const recetaFunction = new NodejsFunction(this,'RecetaFunction',{
+      functionName:'RecetaFunction',
+      entry:join(__dirname,'/../functions/recetaHandler.ts'),
+      ...nodeJSProps
+    });
+    return recetaFunction;
+  }
+
+  private createPatologiaLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
+    const patologiaFunction = new NodejsFunction(this,'PatologiaFunction',{
+      functionName:'PatologiaFunction',
+      entry:join(__dirname,'/../functions/patologiaHandler.ts'),
+      ...nodeJsProps
+    });
+    return patologiaFunction;
   }
 
   private createCitasLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{

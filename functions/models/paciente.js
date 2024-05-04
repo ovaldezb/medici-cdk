@@ -10,7 +10,10 @@ var PacienteScheme = new Schema({
   telefono: String,
   correo:String,
   sexo: String,
-  carnet: String
+  carnet: String,
+  codigoPostal: String,
+  ocupacion: String,
+  raza: String
 });
 
 module.exports  = mongoose.model('Paciente',PacienteScheme);

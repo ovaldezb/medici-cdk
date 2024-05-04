@@ -51,8 +51,8 @@ async function addSignos(event:any){
 async function updateSignos(event:any) {
   const idSignos = event.pathParameters.parametro;
   const body = JSON.parse(event.body);
-  console.log('idSignos',idSignos);
-  console.log('Body',body);
+  //console.log('idSignos',idSignos);
+  //console.log('Body',body);
   const signosUpdated = await db.updateSignos(idSignos,body);
   if(signosUpdated.error != null){
     var errMessage = {

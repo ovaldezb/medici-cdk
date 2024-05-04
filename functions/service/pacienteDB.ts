@@ -17,7 +17,10 @@ const pacienteDB = (mongoUri:string)=>{
         fechaNacimiento : paciente.fechaNacimiento,
         correo: paciente.correo,
         sexo : paciente.sexo,
-        carnet: paciente.carnet
+        carnet: paciente.carnet,
+        ocupacion: paciente.ocupacion,
+        raza: paciente.raza,
+        codigoPostal: paciente.codigoPostal
       }).save()
       .then((pacienteSaved:any)=>{
         return {paciente:pacienteSaved};
