@@ -101,7 +101,6 @@ const carnetDB = (mongoUri: string) => {
           }
         ) 
         .populate("pacientes")
-        //.populate("citas.$.paciente")
         .then((carnet: any) => {
           return { carnet: carnet };
         })

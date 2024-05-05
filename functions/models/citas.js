@@ -21,7 +21,13 @@ const CitasSchema = new Schema({
   horaCita: String,
   horaCitaFin: String,
   duracion: Number,
-  isSignosTomados:Boolean
+  isSignosTomados:Boolean,
+  isAtendido: Boolean,
+  medicamentoReceta:[{
+    nombre:String,
+    prescripcion:String
+  }],
+  motivoConsulta: String
 });
 
 module.exports = mongoose.model('Cita',CitasSchema);
