@@ -17,7 +17,8 @@ const SignosSchema = new Schema({
   frecuenciaRespiratoria: Number,
   spo2: Number,
   glucotest: Number,
-  descripcion: String,
+  motivoConsulta: String,
+  alergias: String,
   escalaDolor: Number
 });
 

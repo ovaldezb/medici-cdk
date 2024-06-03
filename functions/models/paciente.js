@@ -13,6 +13,7 @@ var PacienteScheme = new Schema({
   carnet: String,
   codigoPostal: String,
   ocupacion: String,
+  escolaridad: String,
   raza: String
 });
 

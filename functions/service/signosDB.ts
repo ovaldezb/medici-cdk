@@ -20,6 +20,7 @@ const signosDB = (mongoUri:string)=>{
         spo2 : params.spo2,
         glucotest: params.glucotest,
         descripcion: params.descripcion,
+        alergias: params.alergias,
         escalaDolor: params.escalaDolor
       }).save()
       .then((signosSaved:any) =>{

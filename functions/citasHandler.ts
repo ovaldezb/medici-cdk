@@ -24,6 +24,8 @@ export const handler = async function(event:any) {
       return updateCita(event);
     case 'DELETE':
       return deleteCita(event.pathParameters.parametro);
+    case 'PATCH':
+      return getCitaById(event.pathParameters.parametro);
     default:
       throw new Error('Unsupported route ');
   }
@@ -112,5 +114,22 @@ async function deleteCita(idCita:string) {
       body: JSON.stringify(delCita),
       headers:headers,
     }
-  
+}
+
+async function getCitaById(idCita:string){
+  const cita = await db.getCitaById(idCita);
+  if(cita===null || cita.error != null){
+    return{
+      statusCode: 404,
+      body: JSON.stringify({
+        message : 'No se pudo obtener la cita'
+      }),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body: JSON.stringify(cita),
+    headers:headers,
+  }
 }

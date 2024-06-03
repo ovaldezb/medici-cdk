@@ -19,7 +19,7 @@ interface SwApiGatewaysProps{
   disponibilidadLambda:IFunction,
   preguntasLambda: IFunction,
   patologiaLambda: IFunction,
-  recetaLambda: IFunction
+  pregresAFLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -42,7 +42,7 @@ export class SwApiGateway extends Construct{
     this.createApigDisponibilidad(props.disponibilidadLambda);
     this.createApiPreguntas(props.preguntasLambda);
     this.createApiPatologia(props.patologiaLambda);
-    this.createAPiReceta(props.recetaLambda);
+    this.createAPiPregResAF(props.pregresAFLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -81,7 +81,7 @@ export class SwApiGateway extends Construct{
     const getCitaByFecha = citas.addResource('{parametro}');
     getCitaByFecha.addCorsPreflight({
       allowOrigins:['*'],
-      allowMethods:['GET','PUT','DELETE']
+      allowMethods:['GET','PUT','DELETE','PATCH']
     });
     getCitaByFecha.addMethod('GET',new LambdaIntegration(citasLambda),{
       authorizer: authorizer
@@ -92,7 +92,10 @@ export class SwApiGateway extends Construct{
     getCitaByFecha.addMethod('DELETE',new LambdaIntegration(citasLambda),{
       authorizer: authorizer
     });
-
+    getCitaByFecha.addMethod('PATCH',new LambdaIntegration(citasLambda),{
+      authorizer: authorizer
+    });
+    
     const getCitaByFechaAndMedico = getCitaByFecha.addResource('{idMedico}');
     getCitaByFechaAndMedico.addCorsPreflight({
       allowOrigins:['*'],
@@ -101,6 +104,7 @@ export class SwApiGateway extends Construct{
     getCitaByFechaAndMedico.addMethod('GET',new LambdaIntegration(citasLambda),{
       authorizer: authorizer
     });
+    
   }
 
   private createApigMedicos(medicosLambda:IFunction){
@@ -181,7 +185,7 @@ export class SwApiGateway extends Construct{
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowMethods: ['OPTIONS', 'POST', 'PUT'],
         allowCredentials: true,
         allowOrigins: ['*'],
       }
@@ -195,9 +199,6 @@ export class SwApiGateway extends Construct{
     signos.addMethod('POST',new LambdaIntegration(signosLambda),{authorizer:authorizer});
     const signosById = signos.addResource('{parametro}'); //en el put is el idSigno, en el get es idPaciente
     signosById.addMethod('PUT',new LambdaIntegration(signosLambda),{authorizer:authorizer});
-    signosById.addMethod('GET',new LambdaIntegration(signosLambda),{authorizer:authorizer});
-    //const signosByPaciente = signos.addResource('paciente').addResource('{idPaciente}')
-    //signosByPaciente.addMethod('GET')
   }
 
   private createApigPerfil(perfilLambda:IFunction){
@@ -473,7 +474,35 @@ export class SwApiGateway extends Construct{
     patologia.addMethod('GET',new LambdaIntegration(patologiaLambda),{authorizer:authorizer}); //
   }
 
-  private createAPiReceta(recetaLambda:IFunction){
+
+  private createAPiPregResAF(pregresAFLambda:IFunction){
+    const apiGwPregResAF = new RestApi(this, 'PregResAFGw',
+    {
+      restApiName:'PregResAF',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:['Content-Type',
+        'X-Amz-Date',
+        'Authorization',
+        'X-Api-Key',],
+        allowMethods:['OPTIONS','GET','POST'],
+        allowCredentials: true,
+        allowOrigins:['*']
+      }
+    });
+
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'PregResAFAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+
+    const pregres = apiGwPregResAF.root.addResource('pregresaf');
+    pregres.addMethod('GET', new LambdaIntegration(pregresAFLambda),{authorizer:authorizer});
+    pregres.addMethod('POST', new LambdaIntegration(pregresAFLambda),{authorizer:authorizer});
+  }
+
+  /*private createAPiReceta(recetaLambda:IFunction){
     const apiGwReceta = new RestApi(this,'RecetaApiGw',{
       restApiName:'Receta',
       deployOptions:{
@@ -496,5 +525,5 @@ export class SwApiGateway extends Construct{
     receta.addMethod('POST', new LambdaIntegration(recetaLambda),{authorizer:authorizer});
     const recetaByIdPaciente = receta.addResource('{idPaciente}');
     recetaByIdPaciente.addMethod('GET',new LambdaIntegration(recetaLambda),{authorizer:authorizer});
-  }
+  }*/
 }

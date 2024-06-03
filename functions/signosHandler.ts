@@ -10,18 +10,10 @@ const headers ={
 export const handler = async function (event:any) {
   const method = event.requestContext.httpMethod;
   switch(method){
-    case 'GET' :
-      if(event.pathParameters != null ){
-        
-      }else{
-        
-      }
     case 'POST':
       return addSignos(event);
     case 'PUT':
-      return updateSignos(event);
-    case 'DELETE':
-      
+      return updateSignos(event);     
     default:
       throw new Error('Unsupported route '+method);
   }
@@ -51,8 +43,6 @@ async function addSignos(event:any){
 async function updateSignos(event:any) {
   const idSignos = event.pathParameters.parametro;
   const body = JSON.parse(event.body);
-  //console.log('idSignos',idSignos);
-  //console.log('Body',body);
   const signosUpdated = await db.updateSignos(idSignos,body);
   if(signosUpdated.error != null){
     var errMessage = {

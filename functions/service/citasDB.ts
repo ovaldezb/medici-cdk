@@ -18,7 +18,9 @@ const citaDB = (mongoUri:string)=>{
         isSignosTomados : params.isSignosTomados,
         isAtendido : params.isAtendido,
         medicamentoReceta : params.medicamentoReceta,
-        motivoConsulta:''
+        exploracionFisica: params.exploracionFisica,
+        diagnostico: params.diagnostico,
+        tratamiento: params.tratamiento
       })
       .save()
       .then((citaSaved:any) =>{
@@ -64,6 +66,19 @@ const citaDB = (mongoUri:string)=>{
         return {error:err};
       });
       
+    },
+    getCitaById:(idCita:string)=>{
+      return Cita.findById(idCita)
+      .populate('medico')
+      .populate('paciente')
+      .populate('signos')
+      .then((allCitas:any)=>{
+        return {citas:allCitas};
+      })
+      .catch((err:any)=>{
+        console.log(err);
+        return {error:err};
+      });
     },
     updateCita:(idCita:string, cita:any)=>{
       return Cita.findOneAndUpdate({_id:idCita},cita,{new:true})

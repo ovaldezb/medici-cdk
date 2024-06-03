@@ -9,7 +9,7 @@ import { SwUsuarioLambdaFunction } from './usuarioLambdaFunction';
 export class MediciCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);    
-    const lambdaFunctions = new SwLambdaFunctions(this,'LambdaFUnctions');
+    const lambdaFunctions = new SwLambdaFunctions(this,'LambdaFunctions');
     const cognitoPool = new SwCognito(this,'ClinicaCognitoPool',lambdaFunctions.cognitoLambda);
     
     const cognitoAddUserPolicy = new iam.PolicyStatement({
@@ -49,7 +49,7 @@ export class MediciCdkStack extends cdk.Stack {
         disponibilidadLambda: lambdaFunctions.disponibilidadLambda,
         preguntasLambda: lambdaFunctions.preguntasLambda,
         patologiaLambda: lambdaFunctions.patologiaLambda,
-        recetaLambda: lambdaFunctions.recetaLambda
+        pregresAFLambda: lambdaFunctions.pregresAFLambda
       },
       cognitoPool.clinicaUserPool
     );

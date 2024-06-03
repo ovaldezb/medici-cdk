@@ -19,7 +19,8 @@ export class SwLambdaFunctions extends Construct{
   public readonly disponibilidadLambda:NodejsFunction;
   public readonly preguntasLambda:NodejsFunction;
   public readonly patologiaLambda:NodejsFunction;
-  public readonly recetaLambda:NodejsFunction;
+  //public readonly recetaLambda:NodejsFunction;
+  public readonly pregresAFLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -64,16 +65,26 @@ export class SwLambdaFunctions extends Construct{
     this.disponibilidadLambda = this.createDisponibilidadLambda(nodeJSProps);
     this.preguntasLambda = this.createPreguntasLambda(nodeJSProps);
     this.patologiaLambda = this.createPatologiaLambda(nodeJSPropsNeo4j);
-    this.recetaLambda = this.createRecetaLambda(nodeJSProps);
+    //this.preguntaAntFam = this.createPreguntaAntFam(nodeJSProps);
+    this.pregresAFLambda = this.createPregresAFLambdaLambda(nodeJSProps);
   }
 
-  private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+  /*private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
     const recetaFunction = new NodejsFunction(this,'RecetaFunction',{
       functionName:'RecetaFunction',
       entry:join(__dirname,'/../functions/recetaHandler.ts'),
       ...nodeJSProps
     });
     return recetaFunction;
+  }*/
+
+  private createPregresAFLambdaLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{
+    const preguntasAntFamFunction = new NodejsFunction(this,'PreguntaAntFam',{
+      functionName:'PreguntaAntFamFunction',
+      entry:join(__dirname,'/../functions/pregresAFHandler.ts'),
+      ...nodeJsProps
+    } );
+    return preguntasAntFamFunction;
   }
 
   private createPatologiaLambda(nodeJsProps:NodejsFunctionProps):NodejsFunction{

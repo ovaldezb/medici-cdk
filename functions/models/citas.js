@@ -27,7 +27,9 @@ const CitasSchema = new Schema({
     nombre:String,
     prescripcion:String
   }],
-  motivoConsulta: String
+  exploracionFisica: String,
+  diagnostico: String,
+  tratamiento: String
 });
 
 module.exports = mongoose.model('Cita',CitasSchema);
