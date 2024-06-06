@@ -4,7 +4,10 @@ import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provid
 
 export const handler = async function(event:any) {
   const params = event.request;
-  await db.saveNewUser(params.userAttributes); 
+  const usuario = await db.existsUserByEmail(params.userAttributes.email.trim());
+  if(usuario===false){
+    await db.saveNewUser(params.userAttributes); 
+  }
   const userPoolId = event.userPoolId; 
   const userName = event.userName;
   const paramsGroup = {

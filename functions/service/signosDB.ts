@@ -21,7 +21,8 @@ const signosDB = (mongoUri:string)=>{
         glucotest: params.glucotest,
         descripcion: params.descripcion,
         alergias: params.alergias,
-        escalaDolor: params.escalaDolor
+        escalaDolor: params.escalaDolor,
+        motivoConsulta: params.motivoConsulta
       }).save()
       .then((signosSaved:any) =>{
         return {signos:signosSaved};
@@ -33,7 +34,6 @@ const signosDB = (mongoUri:string)=>{
     updateSignos:(idSignos:string,signos:any)=>{
       return Signos.findOneAndUpdate({_id:idSignos},signos,{new:true})
       .then((signosUpdated:any) =>{
-        //console.log('Updated',signosUpdated);
         return {signos:signosUpdated};
       })
       .catch((err:any)=>{

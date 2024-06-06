@@ -14,7 +14,6 @@ const cognitoDB = (mongoUri:any)=>{
         telefono: params.phone_number,
         dob : params.birthdate,
         sexo: params.gender,
-        //sucursal: params['custom:sucursal'],
         perfil: params['custom:perfil'],
         cedula: params['custom:cedula'],
         isAdmin: params['custom:isAdmin'],
@@ -25,13 +24,26 @@ const cognitoDB = (mongoUri:any)=>{
       })
       .save()
       .then((savedCognito:any)=>{
-        //console.log('Se guardo el usuario');
         return {usuario:savedCognito};
       })
       .catch((err:any)=>{
         console.log(err);
         return {error:err};
       })
+    },
+    existsUserByEmail:(email:string)=>{
+      return Usuario.findOne({email:email})
+      .then((usuario:any)=>{
+        if(usuario === null){
+          return false;
+        }else{
+          return true;
+        }
+      })
+      .catch((err:any)=>{
+        console.log('Usuario no encontrado '+err);
+        return err;
+      });
     }
   }
 

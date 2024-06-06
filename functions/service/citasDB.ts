@@ -11,16 +11,15 @@ const citaDB = (mongoUri:string)=>{
       return new Cita({
         paciente : params.paciente,
         medico : params.medico,
-        //signos : params.signos,
         fechaCita : params.fechaCita,
         horaCita : params.horaCita,
-        duracion : params.duracion,
         isSignosTomados : params.isSignosTomados,
         isAtendido : params.isAtendido,
         medicamentoReceta : params.medicamentoReceta,
         exploracionFisica: params.exploracionFisica,
         diagnostico: params.diagnostico,
-        tratamiento: params.tratamiento
+        tratamiento: params.tratamiento,
+        horaCreaCita: params.horaCreaCita
       })
       .save()
       .then((citaSaved:any) =>{

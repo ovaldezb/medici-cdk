@@ -19,8 +19,8 @@ const CitasSchema = new Schema({
   }],
   fechaCita: Date,
   horaCita: String,
-  horaCitaFin: String,
-  duracion: Number,
+  horaCitaFin: Date,
+  horaConsultaInicio:Date,
   isSignosTomados:Boolean,
   isAtendido: Boolean,
   medicamentoReceta:[{
@@ -29,7 +29,9 @@ const CitasSchema = new Schema({
   }],
   exploracionFisica: String,
   diagnostico: String,
-  tratamiento: String
+  tratamiento: String,
+  horaTomaSignos: Date,
+  horaCreaCita: Date
 });
 
 module.exports = mongoose.model('Cita',CitasSchema);

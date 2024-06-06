@@ -3,9 +3,8 @@ var { Schema } = mongoose;
 
 var PreguntaAntFamSchema = new Schema({
   id: String,
-  respuestas: [{respuesta:string, valor:string}],
+  respuestas: [{respuesta:String, valor:String}],
   pregunta: String,
-  otro: String,
   opcional:Boolean
 });
 
