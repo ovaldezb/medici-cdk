@@ -5,7 +5,8 @@ var PreguntaAntFamSchema = new Schema({
   id: String,
   respuestas: [{respuesta:String, valor:String}],
   pregunta: String,
-  opcional:Boolean
+  opcional:Boolean,
+  orden:Number
 });
 
 module.exports = mongoose.model('PreguntaAntFam',PreguntaAntFamSchema);

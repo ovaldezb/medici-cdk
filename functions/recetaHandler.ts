@@ -9,7 +9,7 @@ const headers ={
 
 export const handler = async function(event:any) {
   const method = event.requestContext.httpMethod;
-  console.log(event.body);
+  
   switch(method){
     case 'GET':
       if(event.pathParameters != null){
@@ -23,7 +23,6 @@ export const handler = async function(event:any) {
 }
 
 async function addReceta(body:any) {
-  console.log(body);
   const recetaBody = JSON.parse(body);
   const receta = await db.save(recetaBody);
   if(receta === null || receta.error != null){

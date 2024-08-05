@@ -21,6 +21,8 @@ export class SwLambdaFunctions extends Construct{
   public readonly patologiaLambda:NodejsFunction;
   //public readonly recetaLambda:NodejsFunction;
   public readonly pregresAFLambda:NodejsFunction;
+  public readonly productoLambda:NodejsFunction;
+  public readonly ventaLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -67,6 +69,8 @@ export class SwLambdaFunctions extends Construct{
     this.patologiaLambda = this.createPatologiaLambda(nodeJSPropsNeo4j);
     //this.preguntaAntFam = this.createPreguntaAntFam(nodeJSProps);
     this.pregresAFLambda = this.createPregresAFLambdaLambda(nodeJSProps);
+    this.productoLambda = this.createProductoLambda(nodeJSProps);
+    this.ventaLambda = this.createVentatLambda(nodeJSProps);
   }
 
   /*private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
@@ -211,5 +215,23 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return preguntasLambda;
+  }
+
+  private createProductoLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const productoLambda = new NodejsFunction(this,'ProductoLambda',{
+      functionName:'ProductoLambda',
+      entry:join(__dirname,'/../functions/productoHandler.ts'),
+      ...nodeJSProps
+    });
+    return productoLambda;
+  }
+
+  private createVentatLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
+    const ticketLambda = new NodejsFunction(this,'TicketLmabda',{
+      functionName:'TicketLambda',
+      entry:join(__dirname,'/../functions/ventasHandler.ts'),
+      ...nodeJSProps
+    });
+    return ticketLambda;
   }
 }

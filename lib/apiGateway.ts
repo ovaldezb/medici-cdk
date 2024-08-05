@@ -19,7 +19,9 @@ interface SwApiGatewaysProps{
   disponibilidadLambda:IFunction,
   preguntasLambda: IFunction,
   patologiaLambda: IFunction,
-  pregresAFLambda: IFunction
+  pregresAFLambda: IFunction,
+  productoLambda: IFunction,
+  ventaLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -42,7 +44,9 @@ export class SwApiGateway extends Construct{
     this.createApigDisponibilidad(props.disponibilidadLambda);
     this.createApiPreguntas(props.preguntasLambda);
     this.createApiPatologia(props.patologiaLambda);
-    this.createAPiPregResAF(props.pregresAFLambda);
+    this.createApiPregResAF(props.pregresAFLambda);
+    this.createApiProducto(props.productoLambda);
+    this.createApiVenta(props.ventaLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -475,7 +479,7 @@ export class SwApiGateway extends Construct{
   }
 
 
-  private createAPiPregResAF(pregresAFLambda:IFunction){
+  private createApiPregResAF(pregresAFLambda:IFunction){
     const apiGwPregResAF = new RestApi(this, 'PregResAFGw',
     {
       restApiName:'PregResAF',
@@ -502,6 +506,61 @@ export class SwApiGateway extends Construct{
     pregres.addMethod('POST', new LambdaIntegration(pregresAFLambda),{authorizer:authorizer});
   }
 
+  private createApiProducto(productoLambda:IFunction){
+    const apiGwProducto = new RestApi(this,'ProductoApiGw',{
+      restApiName:'ProductoService',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:['Content-Type',
+        'X-Amz-Date',
+        'Authorization',
+        'X-Api-Key',],
+        allowMethods:['OPTIONS','GET','POST','PUT','DELETE'],
+        allowCredentials:true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'ProductoAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const producto = apiGwProducto.root.addResource('producto');
+    producto.addMethod('POST',new LambdaIntegration(productoLambda),{authorizer:authorizer});
+    const productoGet = producto.addResource('{codigo}');
+    productoGet.addMethod('GET', new LambdaIntegration(productoLambda),{authorizer:authorizer});
+    productoGet.addMethod('PUT',new LambdaIntegration(productoLambda),{authorizer:authorizer});
+    productoGet.addMethod('DELETE',new LambdaIntegration(productoLambda),{authorizer:authorizer});
+    
+  }
+
+  private createApiVenta(ventaLambda:IFunction){
+    const apiGwVentas = new RestApi(this,'VentaApiGw',
+      {
+        restApiName:'VentasServicio',
+        deployOptions:{
+          stageName:'dev'
+        },
+        defaultCorsPreflightOptions:{
+          allowHeaders: [
+            'Content-Type',
+            'X-Amz-Date',
+            'Authorization',
+            'X-Api-Key',
+          ],
+          allowMethods:['OPTIONS','GET'],
+          allowCredentials:true,
+          allowOrigins:['*']
+        }
+      }
+    );
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'VentasAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+
+    const ventas = apiGwVentas.root.addResource('ventas');
+    ventas.addMethod('GET', new LambdaIntegration(ventaLambda),{authorizer:authorizer});
+  }
   /*private createAPiReceta(recetaLambda:IFunction){
     const apiGwReceta = new RestApi(this,'RecetaApiGw',{
       restApiName:'Receta',
