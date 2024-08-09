@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 const Usuario = require('../models/usuario');
+const Sucursal = require('../models/sucursal');
 
 const cognitoDB = (mongoUri:any)=>{
   mongoose.connect(mongoUri);
 
   return {
     saveNewUser:(params:any)=>{
+      const suc = new Sucursal();
+      suc.id =params['custom:sucursal'];
+      console.log(suc);
       return new Usuario({
         nombre: params.given_name,
         apellidoP: params.middle_name,
@@ -20,7 +24,7 @@ const cognitoDB = (mongoUri:any)=>{
         rfc : params['custom:rfc'],
         especialidad: params['custom:especialidad'],
         isDisabled: params['custom:isDisabled'],
-        sucursal: params['custom:sucursal']
+        sucursal: suc
       })
       .save()
       .then((savedCognito:any)=>{

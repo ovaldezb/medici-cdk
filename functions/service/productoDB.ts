@@ -21,6 +21,7 @@ const productoDB = (mongoUri: string)=>{
         maximo: producto.maximo,
         lote: producto.lote,
         caducidad: producto.caducidad,
+        isRecetaRequerida:producto.isRecetaRequerida,
         isActivo: producto.isActivo
       })
       .save()
@@ -42,7 +43,7 @@ const productoDB = (mongoUri: string)=>{
         return {error:err}
       })
     },
-    findProductoByCodigoBarras:(codigoBarras:number)=>{
+    findProductoByCodigoBarras:(codigoBarras:string)=>{
       return Producto.findOne({codigoBarras:codigoBarras})
       .then((productoFound:any)=>{
         return { producto:productoFound}

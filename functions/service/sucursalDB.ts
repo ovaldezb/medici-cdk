@@ -33,6 +33,16 @@ const sucursalDB = (mongoUri:string)=>{
         return {error:err};
       })
     },
+    getSucById:(idSucursal:string)=>{
+      return Sucursal.findOne({_id:idSucursal})
+            .then((sucursalFound:any)=>{
+              return {sucursal:sucursalFound};
+            })
+            .catch((err:any)=>{
+              console.log(err);
+              return {error:err};
+            });
+    },
     update:(idSucursal:string,sucursal:any)=>{
       return Sucursal.findOneAndUpdate({_id:idSucursal},sucursal,{new:true})
         .then((sucUpdated:any)=>{

@@ -227,11 +227,11 @@ export class SwLambdaFunctions extends Construct{
   }
 
   private createVentatLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
-    const ticketLambda = new NodejsFunction(this,'TicketLmabda',{
-      functionName:'TicketLambda',
+    const ventaLambda = new NodejsFunction(this,'VentaLambda',{
+      functionName:'VentaLambda',
       entry:join(__dirname,'/../functions/ventasHandler.ts'),
       ...nodeJSProps
     });
-    return ticketLambda;
+    return ventaLambda;
   }
 }

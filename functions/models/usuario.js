@@ -14,13 +14,12 @@ var UsuarioSchema = new Schema({
   cedula: String,
   isAdmin:Boolean,
   rfc: String,
-  /*creationDate:{
-    type: Date,
-    default: new Date()
-  },*/
   especialidad:String,
   isDisabled:Boolean,
-  sucursal: String
+  sucursal: {
+    type: Schema.Types.ObjectId,
+    ref: "Sucursal"
+  } 
 });
 
 module.exports = mongoose.model('Usuario',UsuarioSchema);

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import MedicamentoReceta from './medicamentoReceta';
+
 var { Schema } = mongoose;
 
 

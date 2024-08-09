@@ -3,7 +3,7 @@ var { Schema } = mongoose;
 
 const TicketVenta = new Schema({
   id:String,
-  numeroTicket:Number,
+  numero:Number,
   sucursal:String
 });
 

@@ -31,7 +31,7 @@ export const handler = async function(event:any){
 }
 
 async function getProductoByCodigo(codigoBarras:string) {
-  const producto = await db.findProductoByCodigoBarras(Number(codigoBarras));
+  const producto = await db.findProductoByCodigoBarras(codigoBarras);
   if(producto === null || producto.error != null){
     return {
       statusCode:404,

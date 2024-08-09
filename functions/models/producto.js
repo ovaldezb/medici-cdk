@@ -3,7 +3,7 @@ var { Schema } = mongoose;
 
 const ProductoSchema = new Schema({
   id: String,
-  codigoBarras: Number,
+  codigoBarras: String,
   descripcion: String,
   seVendePor: String,
   precioCosto: Number,
@@ -18,6 +18,7 @@ const ProductoSchema = new Schema({
   maximo: Number,
   lote: String,
   caducidad: Date,
+  isRecetaRequerida:Boolean,
   isActivo:Boolean
 });
 

@@ -89,6 +89,11 @@ export class SwCognito extends Construct{
       userPoolId:this.clinicaUserPool.userPoolId
     });
 
+    new cognito.CfnUserPoolGroup(this,'Farmacia Group',{
+      groupName:'FARMACIA',
+      userPoolId: this.clinicaUserPool.userPoolId
+    });
+
     this.clinicaUserPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION,cognitoLambda);
   }
 }

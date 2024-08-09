@@ -6,7 +6,8 @@ const perfilDB = (mongoUri:any)=>{
   return {
     savePerfilDB:(params:any)=>{
       return new Perfil({
-        nombre: params.nombre
+        nombre: params.nombre,
+        valor:params.descripcion
       })
       .save()
       .then((savedPerfil:any)=>{

@@ -307,6 +307,7 @@ export class SwApiGateway extends Construct{
     sucursal.addMethod('GET',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
     sucursal.addMethod('POST',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
     const sucursalById = sucursal.addResource('{idSucursal}');
+    sucursalById.addMethod('GET', new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
     sucursalById.addMethod('PUT',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
     sucursalById.addMethod('DELETE',new LambdaIntegration(sucursalLambda),{authorizer:authorizer});
   }
@@ -447,8 +448,6 @@ export class SwApiGateway extends Construct{
     });
     const preguntas = apiGwPreguntas.root.addResource('preguntas');
     preguntas.addMethod('POST',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
-    //const updtAntecedentesById = preguntas.addResource('{idAntecedente}');
-    //updtAntecedentesById.addMethod('PUT',new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
     const preguntasBySeccion = preguntas.addResource('{seccion}');
     preguntasBySeccion.addMethod('GET', new LambdaIntegration(preguntasLambda),{authorizer:authorizer});
   }
@@ -548,7 +547,7 @@ export class SwApiGateway extends Construct{
             'Authorization',
             'X-Api-Key',
           ],
-          allowMethods:['OPTIONS','GET'],
+          allowMethods:['OPTIONS','GET','POST'],
           allowCredentials:true,
           allowOrigins:['*']
         }
@@ -558,8 +557,9 @@ export class SwApiGateway extends Construct{
       cognitoUserPools:[this._clinicaCognito]
     });
 
-    const ventas = apiGwVentas.root.addResource('ventas');
+    const ventas = apiGwVentas.root.addResource('ventas').addResource('{action}');
     ventas.addMethod('GET', new LambdaIntegration(ventaLambda),{authorizer:authorizer});
+    ventas.addMethod('POST', new LambdaIntegration(ventaLambda),{authorizer:authorizer});
   }
   /*private createAPiReceta(recetaLambda:IFunction){
     const apiGwReceta = new RestApi(this,'RecetaApiGw',{

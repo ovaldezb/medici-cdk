@@ -11,7 +11,12 @@ export const handler = async function (event:any) {
   const method = event.requestContext.httpMethod;
   switch(method){
     case 'GET' :
-      return getAllSucursales();
+      let idSucursal = event.pathParameters.idSucursal;
+      if(idSucursal!=null){
+        return getSucursalById(idSucursal);
+      }else{
+        return getAllSucursales();
+      }
     case 'POST' :
       return saveSucursal(event);
     case 'PUT' :
@@ -37,6 +42,24 @@ async function getAllSucursales() {
   return{
     statusCode: 200,
     body: JSON.stringify(sucursales),
+    headers:headers
+  }
+}
+
+async function getSucursalById(idSucursal:string) {
+  const sucursal = await db.getSucById(idSucursal);
+  if(sucursal===null || sucursal.error != null){
+    return{
+      statusCode: 400,
+      body: JSON.stringify({
+        message:'Error al obtener la sucursale '+sucursal.error
+      }),
+      headers:headers
+    }
+  }
+  return{
+    statusCode: 200,
+    body: JSON.stringify(sucursal),
     headers:headers
   }
 }
