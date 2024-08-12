@@ -11,8 +11,23 @@ const charToFill = '0';
 const carnetDB = (mongoUri: string) => {
   mongoose.connect(mongoUri, {});
   return {
-    save: (params: any) => {
-      return Folio.findOneAndUpdate(
+    save: (body: any) => {
+      return new Carnet({
+        fechaAlta: new Date(),
+        folio: pad(body.folio, numPad, charToFill),
+        noConsultasDisponibles: body.noConsultasDisponibles,
+        citas: [],
+        pacientes: body.pacientes,
+      })
+      .save()
+      .then((carnetSaved: any) => {
+          return { carnet: carnetSaved };
+      })
+      .catch((err: any) => {
+        console.log(err);
+        return { error: err };
+      });
+      /*return Folio.findOneAndUpdate(
         { _id: carnet },
         { $inc: { sequence_value: 1 } },
         { new: true }
@@ -66,7 +81,7 @@ const carnetDB = (mongoUri: string) => {
         .catch((err: any) => {
           console.log(err);
           return { error: err };
-        });
+        });*/
     },
     getCarnets: () => {
       return Carnet.find()
@@ -133,7 +148,7 @@ const carnetDB = (mongoUri: string) => {
         return {error:err}
       });
     },
-    getFolio: (nombre: string) => {
+    /*getFolio: (nombre: string) => {
       return Folio.findOneAndUpdate(
         { _id: nombre },
         { $inc: { sequence_value: 1 } },
@@ -169,7 +184,7 @@ const carnetDB = (mongoUri: string) => {
           console.log(err);
           return { error: err };
         });
-    },
+    },*/
   };
 };
 

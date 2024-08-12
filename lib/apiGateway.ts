@@ -21,7 +21,8 @@ interface SwApiGatewaysProps{
   patologiaLambda: IFunction,
   pregresAFLambda: IFunction,
   productoLambda: IFunction,
-  ventaLambda: IFunction
+  ventaLambda: IFunction,
+  folioLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -47,27 +48,15 @@ export class SwApiGateway extends Construct{
     this.createApiPregResAF(props.pregresAFLambda);
     this.createApiProducto(props.productoLambda);
     this.createApiVenta(props.ventaLambda);
+    this.createApiFolio(props.folioLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
     const apiGwCitas = new RestApi(this, 'CitasApiGw', {
       restApiName: 'CitasService',
-      //handler: citasLambda,
-      //proxy: false,
       deployOptions: {
         stageName: 'dev'
       },
-      /*defaultCorsPreflightOptions: {
-        allowHeaders: [
-          'Content-Type',
-          'X-Amz-Date',
-          'Authorization',
-          'X-Api-Key'
-        ],
-        allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        allowCredentials: true,
-        allowOrigins: ['*'],
-      }*/
     });
 
     const authorizer = new CognitoUserPoolsAuthorizer(this,'CitasAuthorizer',{
@@ -535,24 +524,23 @@ export class SwApiGateway extends Construct{
 
   private createApiVenta(ventaLambda:IFunction){
     const apiGwVentas = new RestApi(this,'VentaApiGw',
-      {
-        restApiName:'VentasServicio',
-        deployOptions:{
-          stageName:'dev'
-        },
-        defaultCorsPreflightOptions:{
-          allowHeaders: [
-            'Content-Type',
-            'X-Amz-Date',
-            'Authorization',
-            'X-Api-Key',
-          ],
-          allowMethods:['OPTIONS','GET','POST'],
-          allowCredentials:true,
-          allowOrigins:['*']
-        }
+    {
+      restApiName:'VentasServicio',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods:['OPTIONS','GET','POST'],
+        allowCredentials:true,
+        allowOrigins:['*']
       }
-    );
+    });
     const authorizer = new CognitoUserPoolsAuthorizer(this,'VentasAuthorizer',{
       cognitoUserPools:[this._clinicaCognito]
     });
@@ -561,6 +549,35 @@ export class SwApiGateway extends Construct{
     ventas.addMethod('GET', new LambdaIntegration(ventaLambda),{authorizer:authorizer});
     ventas.addMethod('POST', new LambdaIntegration(ventaLambda),{authorizer:authorizer});
   }
+
+  private createApiFolio(folioLambda:IFunction){
+    const apiGwFolio = new RestApi(this,'FolioApiGw',{
+      restApiName:'FolioServicio',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods:['OPTIONS','GET','POST'],
+        allowCredentials:true,
+        allowOrigins:['*']
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'FolioAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+
+    const folio = apiGwFolio.root.addResource('folio');
+    folio.addMethod('POST', new LambdaIntegration(folioLambda),{authorizer:authorizer});
+    const getFolio = folio.addResource('{tipo}').addResource('{sucursal}');
+    getFolio.addMethod('GET', new LambdaIntegration(folioLambda),{authorizer:authorizer});
+  }
+
   /*private createAPiReceta(recetaLambda:IFunction){
     const apiGwReceta = new RestApi(this,'RecetaApiGw',{
       restApiName:'Receta',

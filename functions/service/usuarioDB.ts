@@ -4,7 +4,7 @@ const Usuario = require('../models/usuario');
 const usuariosDB = (mongoUri:string)=>{
   mongoose.connect(mongoUri,{ });
   return{
-    getAllUsers:(params:any)=>{
+    getAllUsers:()=>{
       return Usuario.find()
       .then((listaUsuarios:any)=>{
         return {usuarios:listaUsuarios}

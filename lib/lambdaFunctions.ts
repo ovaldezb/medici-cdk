@@ -23,6 +23,7 @@ export class SwLambdaFunctions extends Construct{
   public readonly pregresAFLambda:NodejsFunction;
   public readonly productoLambda:NodejsFunction;
   public readonly ventaLambda:NodejsFunction;
+  public readonly folioLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -71,6 +72,7 @@ export class SwLambdaFunctions extends Construct{
     this.pregresAFLambda = this.createPregresAFLambdaLambda(nodeJSProps);
     this.productoLambda = this.createProductoLambda(nodeJSProps);
     this.ventaLambda = this.createVentatLambda(nodeJSProps);
+    this.folioLambda = this.createFolioLambda(nodeJSProps);
   }
 
   /*private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
@@ -233,5 +235,14 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return ventaLambda;
+  }
+
+  private createFolioLambda(nodeJSProps:NodejsFunctionProps){
+    const folioLambda = new NodejsFunction(this,'FolioLambda',{
+      functionName:'FolioLambda',
+      entry:join(__dirname,'/../functions/folioHandler.ts'),
+      ...nodeJSProps
+    });
+    return folioLambda;
   }
 }

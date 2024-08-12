@@ -11,9 +11,8 @@ export const handler = async function (event:any) {
   const method = event.requestContext.httpMethod;
   switch(method){
     case 'GET' :
-      let idSucursal = event.pathParameters.idSucursal;
-      if(idSucursal!=null){
-        return getSucursalById(idSucursal);
+      if(event.pathParameters!=null){
+        return getSucursalById(event.pathParameters.idSucursal);
       }else{
         return getAllSucursales();
       }

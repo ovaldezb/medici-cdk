@@ -12,7 +12,7 @@ export const handler = async function(event:any) {
   const method = event.requestContext.httpMethod;
   switch(method){
     case 'GET':
-      return getAllUsuarios(event);
+      return getAllUsuarios();
     case 'PUT':
       if(event.pathParameters.isDisabled==='true'){
         disableUsuarioFromCognito(event);
@@ -25,8 +25,8 @@ export const handler = async function(event:any) {
   }
 }
 
-async function getAllUsuarios(params:any) {
-  const listaUsuario = await db.getAllUsers(params);
+async function getAllUsuarios() {
+  const listaUsuario = await db.getAllUsers();
   if(listaUsuario.error != null || listaUsuario === null){
     return{
       statusCode: 404,
