@@ -6,8 +6,8 @@ const headers ={
   'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
   'Access-Control-Allow-Credentials' : 'true',
   'Content-Type': 'application/json',
-  'user':'omar.valdez.becerril@gmail.com',
-  'password':'@Rosl1ku3$'
+  'user':'',
+  'password':''
 };
 
 export const handler = async function (event:any) {
