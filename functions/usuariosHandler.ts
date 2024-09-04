@@ -64,7 +64,6 @@ async function updateUsuario(event:any) {
 }
 
 async function disableUsuarioFromCognito(event:any) {
-  console.log('disable user');
   const cognito = new CognitoIdentityProvider({
     apiVersion: "2016-04-18",
   });
@@ -78,7 +77,6 @@ async function disableUsuarioFromCognito(event:any) {
 }
 
 async function enableUsuarioFromCognito(event:any) {
-  //console.log('enableUser');
   const cognito = new CognitoIdentityProvider({
     apiVersion: "2016-04-18",
   });

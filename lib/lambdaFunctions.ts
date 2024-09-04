@@ -24,6 +24,7 @@ export class SwLambdaFunctions extends Construct{
   public readonly productoLambda:NodejsFunction;
   public readonly ventaLambda:NodejsFunction;
   public readonly folioLambda:NodejsFunction;
+  public readonly facturacionLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -36,6 +37,19 @@ export class SwLambdaFunctions extends Construct{
       },
       environment: {
         MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+      },
+      runtime: Runtime.NODEJS_18_X
+    }
+
+
+    const nodeJSPropsFarmacia: NodejsFunctionProps ={
+      bundling: {
+        externalModules: [
+          'aws-sdk'
+        ]
+      },
+      environment: {
+        MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB_FARMACIA}?retryWrites=true&w=majority`,
       },
       runtime: Runtime.NODEJS_18_X
     }
@@ -70,9 +84,10 @@ export class SwLambdaFunctions extends Construct{
     this.patologiaLambda = this.createPatologiaLambda(nodeJSPropsNeo4j);
     //this.preguntaAntFam = this.createPreguntaAntFam(nodeJSProps);
     this.pregresAFLambda = this.createPregresAFLambdaLambda(nodeJSProps);
-    this.productoLambda = this.createProductoLambda(nodeJSProps);
-    this.ventaLambda = this.createVentatLambda(nodeJSProps);
+    this.productoLambda = this.createProductoLambda(nodeJSPropsFarmacia);
+    this.ventaLambda = this.createVentatLambda(nodeJSPropsFarmacia);
     this.folioLambda = this.createFolioLambda(nodeJSProps);
+    this.facturacionLambda = this.createFacturacionLambda(nodeJSPropsFarmacia);
   }
 
   /*private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
@@ -244,5 +259,14 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return folioLambda;
+  }
+
+  private createFacturacionLambda(nodeJSProps:NodejsFunctionProps){
+    const facturacionLambda = new NodejsFunction(this,'FacturacionLambda',{
+      functionName:'FacturacionLambda',
+      entry:join(__dirname,'/../functions/facturacionHandler.ts'),
+      ...nodeJSProps
+    });
+    return facturacionLambda;
   }
 }

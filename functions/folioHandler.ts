@@ -9,7 +9,6 @@ const headers ={
 
 export const handler = async function(event:any){
   const method = event.requestContext.httpMethod;
-  console.log(event);
   switch(method){
     case 'GET':
       let tipo = event.pathParameters.tipo;
@@ -42,7 +41,6 @@ async function obtieneFolio(tipo:string, sucursal:string) {
 
 async function creaFolios(event:any) {
   let bodyFolio = JSON.parse(event.body);
-  console.log(bodyFolio);
   const folio = await db.addFolio(bodyFolio);
   if(folio===null || folio.error != null){
     return{

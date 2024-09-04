@@ -22,7 +22,8 @@ interface SwApiGatewaysProps{
   pregresAFLambda: IFunction,
   productoLambda: IFunction,
   ventaLambda: IFunction,
-  folioLambda: IFunction
+  folioLambda: IFunction,
+  facturacionLambda: IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -49,6 +50,8 @@ export class SwApiGateway extends Construct{
     this.createApiProducto(props.productoLambda);
     this.createApiVenta(props.ventaLambda);
     this.createApiFolio(props.folioLambda);
+    this.createApiFacturacion(props.facturacionLambda);
+
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -576,6 +579,29 @@ export class SwApiGateway extends Construct{
     folio.addMethod('POST', new LambdaIntegration(folioLambda),{authorizer:authorizer});
     const getFolio = folio.addResource('{tipo}').addResource('{sucursal}');
     getFolio.addMethod('GET', new LambdaIntegration(folioLambda),{authorizer:authorizer});
+  }
+
+  private createApiFacturacion(facturacionLambda:IFunction){
+    const apiGwFacturacion = new LambdaRestApi(this,'FacturacionApiGw',{
+      restApiName:'FacturacionService',
+      handler:facturacionLambda,
+      proxy:false,
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions:{
+        allowHeaders:['Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',],
+        allowMethods:['OPTIONS','POST'],
+        allowCredentials: true,
+        allowOrigins:['*']
+      }
+    });
+
+    const tokenFacturacion = apiGwFacturacion.root.addResource('facturacion');
+    tokenFacturacion.addMethod('POST');
   }
 
   /*private createAPiReceta(recetaLambda:IFunction){

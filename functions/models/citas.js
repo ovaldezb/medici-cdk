@@ -31,7 +31,9 @@ const CitasSchema = new Schema({
   diagnostico: String,
   tratamiento: String,
   horaTomaSignos: Date,
-  horaCreaCita: Date
+  horaCreaCita: Date,
+  noReceta: String,
+  duracion: Number
 });
 
 module.exports = mongoose.model('Cita',CitasSchema);

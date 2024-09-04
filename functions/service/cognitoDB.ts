@@ -9,7 +9,6 @@ const cognitoDB = (mongoUri:any)=>{
     saveNewUser:(params:any)=>{
       const suc = new Sucursal();
       suc.id =params['custom:sucursal'];
-      console.log(suc);
       return new Usuario({
         nombre: params.given_name,
         apellidoP: params.middle_name,

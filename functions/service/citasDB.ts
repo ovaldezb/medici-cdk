@@ -19,7 +19,9 @@ const citaDB = (mongoUri:string)=>{
         exploracionFisica: params.exploracionFisica,
         diagnostico: params.diagnostico,
         tratamiento: params.tratamiento,
-        horaCreaCita: params.horaCreaCita
+        horaCreaCita: params.horaCreaCita,
+        noReceta: params.noReceta,
+        duracion: params.duracion
       })
       .save()
       .then((citaSaved:any) =>{

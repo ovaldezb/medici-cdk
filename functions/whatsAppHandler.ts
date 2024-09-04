@@ -1,9 +1,9 @@
 export const handler = async function(event:any) {
   const method = event.requestContext.httpMethod;
-  console.log('Method',method);
-  console.log(event);
+  
+  
   if(method==='GET'){
-    console.log('En el Get');
+    
     return{
       statusCode: 200,
       //body: JSON.stringify({"hub.challenge":event.queryStringParameters['hub.challenge']})
