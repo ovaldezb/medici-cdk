@@ -13,15 +13,20 @@ const citaDB = (mongoUri:string)=>{
         medico : params.medico,
         fechaCita : params.fechaCita,
         horaCita : params.horaCita,
+        horaCitaFin: params.horaCitaFin,
         isSignosTomados : params.isSignosTomados,
         isAtendido : params.isAtendido,
         medicamentoReceta : params.medicamentoReceta,
         exploracionFisica: params.exploracionFisica,
         diagnostico: params.diagnostico,
         tratamiento: params.tratamiento,
+        horaTomaSignos: params.horaTomaSignos,
         horaCreaCita: params.horaCreaCita,
         noReceta: params.noReceta,
-        duracion: params.duracion
+        duracion: params.duracion,
+        isInterconsulta: params.isInterconsulta,
+        medicoInterconsulta: params.medicoInterconsulta,
+        isIntConAtendido: params.isIntConAtendido
       })
       .save()
       .then((citaSaved:any) =>{

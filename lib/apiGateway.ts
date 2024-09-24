@@ -23,7 +23,8 @@ interface SwApiGatewaysProps{
   productoLambda: IFunction,
   ventaLambda: IFunction,
   folioLambda: IFunction,
-  facturacionLambda: IFunction
+  facturacionLambda: IFunction,
+  interconsultaLambda:IFunction
 }
 
 export class SwApiGateway extends Construct{
@@ -51,7 +52,7 @@ export class SwApiGateway extends Construct{
     this.createApiVenta(props.ventaLambda);
     this.createApiFolio(props.folioLambda);
     this.createApiFacturacion(props.facturacionLambda);
-
+    this.createApiInterconsulta(props.interconsultaLambda);
   }
 
   private createApigCitas(citasLambda:IFunction){
@@ -374,7 +375,7 @@ export class SwApiGateway extends Construct{
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods: ['OPTIONS','GET','POST'],
+        allowMethods: ['OPTIONS','GET','POST','PUT'],
         allowCredentials: true,
         allowOrigins:['*']
       }
@@ -383,9 +384,11 @@ export class SwApiGateway extends Construct{
       cognitoUserPools:[this._clinicaCognito]
     });
     const medicamento = apiGwMedicamento.root.addResource('medicamento');
-    medicamento.addMethod('POST', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer})
+    medicamento.addMethod('POST', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer});
+    medicamento.addMethod('GET', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer});
     const medicamentoByNombre = medicamento.addResource('{nombre}');
     medicamentoByNombre.addMethod('GET', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer});
+    medicamentoByNombre.addMethod('PUT', new LambdaIntegration(medicamentoLambda),{authorizer:authorizer});
   }
 
   private createApigDisponibilidad(disponibilidadLambda:IFunction){
@@ -581,6 +584,31 @@ export class SwApiGateway extends Construct{
     getFolio.addMethod('GET', new LambdaIntegration(folioLambda),{authorizer:authorizer});
   }
 
+  private createApiInterconsulta(interConsultaLambda:IFunction){
+    const apiGwInterconsulta = new RestApi(this,'InterconsultaApiGw',{
+      restApiName:'InterconsultaService',
+      deployOptions:{
+        stageName:'dev'
+      },
+      defaultCorsPreflightOptions: {
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+        ],
+        allowMethods: ['OPTIONS', 'GET'],
+        allowCredentials: true,
+        allowOrigins: ['*'],
+      }
+    });
+    const authorizer = new CognitoUserPoolsAuthorizer(this,'InterconsultaAuthorizer',{
+      cognitoUserPools:[this._clinicaCognito]
+    });
+    const interconsulta = apiGwInterconsulta.root.addResource('interconsulta').addResource('{fechaFiltro}');
+    interconsulta.addMethod('GET', new LambdaIntegration(interConsultaLambda),{authorizer:authorizer});
+  }
+
   private createApiFacturacion(facturacionLambda:IFunction){
     const apiGwFacturacion = new LambdaRestApi(this,'FacturacionApiGw',{
       restApiName:'FacturacionService',
@@ -602,6 +630,7 @@ export class SwApiGateway extends Construct{
 
     const tokenFacturacion = apiGwFacturacion.root.addResource('facturacion');
     tokenFacturacion.addMethod('POST');
+    tokenFacturacion.addMethod('GET')
   }
 
   /*private createAPiReceta(recetaLambda:IFunction){

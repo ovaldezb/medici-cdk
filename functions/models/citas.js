@@ -33,7 +33,10 @@ const CitasSchema = new Schema({
   horaTomaSignos: Date,
   horaCreaCita: Date,
   noReceta: String,
-  duracion: Number
+  duracion: Number,
+  isInterconsulta: Boolean,
+  medicoInterconsulta:String,
+  isIntConAtendido:Boolean,
 });
 
 module.exports = mongoose.model('Cita',CitasSchema);

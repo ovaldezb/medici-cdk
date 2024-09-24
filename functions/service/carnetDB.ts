@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 const Carnet = require("../models/carnet");
-const Folio = require("../models/folio");
 require("../models/paciente");
 require("../models/citas");
 require("../models/usuario");

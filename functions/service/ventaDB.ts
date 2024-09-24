@@ -1,4 +1,3 @@
-import { Product } from "aws-cdk-lib/aws-servicecatalog";
 import mongoose from "mongoose";
 const TicketVenta = require('../models/ticketVenta');
 const Venta = require('../models/venta');

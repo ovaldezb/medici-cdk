@@ -53,7 +53,8 @@ export class MediciCdkStack extends cdk.Stack {
         productoLambda: lambdaFunctions.productoLambda,
         ventaLambda: lambdaFunctions.ventaLambda,
         folioLambda: lambdaFunctions.folioLambda,
-        facturacionLambda:lambdaFunctions.facturacionLambda
+        facturacionLambda:lambdaFunctions.facturacionLambda,
+        interconsultaLambda:lambdaFunctions.interConsultaLambda
       },
       cognitoPool.clinicaUserPool
     );

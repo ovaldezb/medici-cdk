@@ -1,4 +1,4 @@
-import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction, NodejsFunctionProps } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { join } from "path";
@@ -25,6 +25,7 @@ export class SwLambdaFunctions extends Construct{
   public readonly ventaLambda:NodejsFunction;
   public readonly folioLambda:NodejsFunction;
   public readonly facturacionLambda:NodejsFunction;
+  public readonly interConsultaLambda:NodejsFunction;
 
   constructor(scope: Construct, id: string){
     super(scope, id);
@@ -36,6 +37,8 @@ export class SwLambdaFunctions extends Construct{
         ]
       },
       environment: {
+        VERSION:'1.0.0',
+        ENV:`${process.env.ENV}`,
         MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
       },
       runtime: Runtime.NODEJS_18_X
@@ -49,7 +52,26 @@ export class SwLambdaFunctions extends Construct{
         ]
       },
       environment: {
+        VERSION:'1.0.0',
+        ENV:`${process.env.ENV}`,
         MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB_FARMACIA}?retryWrites=true&w=majority`,
+      },
+      runtime: Runtime.NODEJS_18_X
+    }
+
+    const nodeJSPropsFacturacion: NodejsFunctionProps ={
+      bundling: {
+        externalModules: [
+          'aws-sdk'
+        ]
+      },
+      environment: {
+        VERSION:'1.0.0',
+        ENV:`${process.env.ENV}`,
+        MONGODB_URI: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}/${process.env.MONGO_DB_FARMACIA}?retryWrites=true&w=majority`,
+        URL_FACTURACION:`${process.env.URL_FACTURACION}`,
+        USER_SWSAP:`${process.env.USER_SWSAP}`,
+        PASSWORD_SWSAP:`${process.env.PASSWORD_SWSAP}`,
       },
       runtime: Runtime.NODEJS_18_X
     }
@@ -87,7 +109,8 @@ export class SwLambdaFunctions extends Construct{
     this.productoLambda = this.createProductoLambda(nodeJSPropsFarmacia);
     this.ventaLambda = this.createVentatLambda(nodeJSPropsFarmacia);
     this.folioLambda = this.createFolioLambda(nodeJSProps);
-    this.facturacionLambda = this.createFacturacionLambda(nodeJSPropsFarmacia);
+    this.facturacionLambda = this.createFacturacionLambda(nodeJSPropsFacturacion);
+    this.interConsultaLambda = this.createInterconsultaLambda(nodeJSProps);
   }
 
   /*private createRecetaLambda(nodeJSProps:NodejsFunctionProps):NodejsFunction{
@@ -268,5 +291,14 @@ export class SwLambdaFunctions extends Construct{
       ...nodeJSProps
     });
     return facturacionLambda;
+  }
+
+  private createInterconsultaLambda(nodeJSProps:NodejsFunctionProps){
+    const interconsultasLambda = new NodejsFunction(this,'InterconsultaLambda',{
+      functionName:'InterconsultaLambda',
+      entry:join(__dirname,'/../functions/interconsultaHandler.ts'),
+      ...nodeJSProps
+    });
+    return interconsultasLambda;
   }
 }
