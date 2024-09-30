@@ -7,7 +7,7 @@ const VentaSchema = new Schema({
     cantidad:Number,
     producto:{
       type: Schema.Types.ObjectId,
-      ref:'Producto'
+      ref:"Producto"
     }
   }],
   fechaVenta:Date,
@@ -23,7 +23,10 @@ const VentaSchema = new Schema({
   banco:String,
   noAprobacion:String,
   noTransaccion:String,
-  isDevolucion:Boolean
+  isDevolucion:Boolean,
+  isFacturado: Boolean,
+  fechaFacturado: Date,
+  sucursal:String
 });
 
 module.exports = mongoose.model('Venta', VentaSchema);

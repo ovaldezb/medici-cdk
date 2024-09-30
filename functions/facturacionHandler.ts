@@ -10,7 +10,7 @@ import { Receptor } from './models/receptor';
 const database = require('./service/facturaEmitidaDB');
 const db = database(process.env.MONGODB_URI);
 
-const headers ={
+const headersSW ={
   'Access-Control-Allow-Origin' : '*',
   'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
   'Access-Control-Allow-Credentials' : 'true',
@@ -19,32 +19,153 @@ const headers ={
   'password': process.env.PASSWORD_SWSAP!
 };
 
+const headers = {
+  'Access-Control-Allow-Origin' : '*',
+  'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+  'Access-Control-Allow-Credentials' : true,
+  'Content-Type': 'application/json'
+}
+
 export const handler = async function (event:any) {
   const method = event.requestContext.httpMethod;
+  const action = event.pathParameters.rfc;
   switch(method){
-    /*case 'GET':
-      return getToken();*/
+    case 'GET':    
+      if(action==='rfc'){
+        let rfc = event.queryStringParameters.rfc;
+        return obtieneDatosByRFC(rfc);
+      }else if(action==='idticket'){
+        let ticketId = event.queryStringParameters.ticketId;
+        const filtro = {noTicket:ticketId}
+        return obtieneVentaById(filtro);
+      }else if(action==='idventa'){
+        let idVenta = event.queryStringParameters.ventaId;
+        const filtro = {_id:idVenta}
+        return obtieneVentaById(filtro);
+      }else if(action==='usocfdi'){
+        return obtieneUsoCfdis();
+      }else if(action==='regimenfiscal'){
+        return ontieneRegimenFiscal();
+      }else if(action==='formapago'){
+        return obtieneFormaPago();
+      }
     case 'POST':
       return emisionFactura(event);
+    case 'PUT':
+      return saveDatosFactura(event);
     default:
       throw new Error('Unsupported route '+method);
+  }
+}
+
+async function obtieneDatosByRFC(rfc:string) {
+  const datosFactura = await db.getDatosFacturaByRfc(rfc);
+  if(datosFactura===null || datosFactura.error!=null){
+    return{
+      statusCode:500,
+      body:JSON.stringify({'mensaje':'no se encontraron los datos de este RFC:'+rfc}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(datosFactura),
+    headers:headers
+  }
+}
+
+async function obtieneVentaById(filtro:any) {
+  const venta = await db.getVentaById(filtro);
+  if(venta===null || venta.error!=null){
+    return{
+      statusCode:404,
+      body:JSON.stringify({mensaje:'error al obtener la venta'+venta.error}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(venta),
+    headers:headers
+  }
+}
+
+async function obtieneUsoCfdis(){
+  const listaUsoCfdis = await db.getUsoCfdi();
+  if(listaUsoCfdis===null || listaUsoCfdis.error){
+    return{
+      statusCode:500,
+      body:JSON.stringify({'mensaje':'error al obtener la lista de uso de CFDI '+listaUsoCfdis.error}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(listaUsoCfdis),
+    headers:headers
+  }
+}
+
+async function ontieneRegimenFiscal() {
+  const listaRegiemFiscal = await db.getRegimenFiscal();
+  if(listaRegiemFiscal===null || listaRegiemFiscal.error!=null){
+    return{
+      statusCode:500,
+      body:JSON.stringify({'mensaje':'error al obtener la lista de regimen fiscal '+listaRegiemFiscal.error}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(listaRegiemFiscal),
+    headers:headers
+  }
+}
+
+async function obtieneFormaPago(){
+  const listaFormaPago = await db.getListaFormaPago();
+  if(listaFormaPago===null || listaFormaPago.error!=null){
+    return{
+      statusCode:500,
+      body:JSON.stringify({'mensaje':'error al obtener la lista de formas de pago '+listaFormaPago.error}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(listaFormaPago),
+    headers:headers
+  }
+}
+
+async function saveDatosFactura(event:any) {
+  let body = JSON.parse(event.body);
+  const datosFactura = await db.saveDatosFactura(body);
+  if(datosFactura===null || datosFactura.error!=null){
+    return{
+      statusCode:500,
+      body:JSON.stringify({'mensaje':'error al guardar los datos de la factura'}),
+      headers:headers
+    }
+  }
+  return{
+    statusCode:200,
+    body:JSON.stringify(datosFactura),
+    headers:headers
   }
 }
 
 async function emisionFactura(event:any) {
   let factura:Factura={} as Factura;
   let url = process.env.URL_FACTURACION+'/security/authenticate';
-  
   let tokenResponse = await fetch(url, {
     method: 'POST',
-    headers: headers
+    headers: headersSW
   });
   let token =  await tokenResponse.json()
                 .then((tok:any)=>{
                   return tok.data.token;
                 });
-  
-  
   const body = JSON.parse(event.body);
   factura.Version = body.Version;
   factura.FormaPago = body.FormaPago;
@@ -134,35 +255,35 @@ async function emisionFactura(event:any) {
     },
     body:JSON.stringify(factura)
   });
-  const responseEmision = await response.json();
+
+  const responseEmision:any = await response.json();
+  console.log(responseEmision);
+  if(responseEmision.data===null || responseEmision.data===undefined){
+    return{
+      statusCode:500,
+      body:JSON.stringify(responseEmision),
+      headers:headers
+    }
+  }
   const facturaResponse = await db.save(responseEmision,factura.Receptor.Rfc,factura.Receptor.Nombre);
   if(facturaResponse===null || facturaResponse.error!= null){
     return{
       statusCode:500,
       body:JSON.stringify({'mensaje':'error al guardar la factura'}),
-      headers:{
-        'Access-Control-Allow-Origin' : '*',
-        'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-        'Access-Control-Allow-Credentials' : true,
-        'Content-Type': 'application/json'
-      }
+      headers:headers
     }
   }
+  await db.updateVentaFacturada(event.pathParameters.rfc, responseEmision.data.fechaTimbrado);
   return {
     statusCode:200,
     body:JSON.stringify(
       {
-      'uuid':facturaResponse.uuid,
-      'fechaTimbrado':facturaResponse.fechaTimbrado,
-      'rfc':facturaResponse.rfc
+      'uuid':facturaResponse.facturaEmitida.uuid,
+      'fechaTimbrado':facturaResponse.facturaEmitida.fechaTimbrado,
+      'rfc':facturaResponse.facturaEmitida.rfc
       }
     ),
-    headers:{
-      'Access-Control-Allow-Origin' : '*',
-      'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-      'Access-Control-Allow-Credentials' : true,
-      'Content-Type': 'application/json'
-    }
+    headers:headers
   }
 }
 

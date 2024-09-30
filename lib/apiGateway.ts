@@ -621,16 +621,18 @@ export class SwApiGateway extends Construct{
         allowHeaders:['Content-Type',
           'X-Amz-Date',
           'Authorization',
-          'X-Api-Key',],
-        allowMethods:['OPTIONS','POST'],
+          'X-Api-Key','skip'],
+        allowMethods:['OPTIONS','POST','PUT','GET'],
         allowCredentials: true,
         allowOrigins:['*']
       }
     });
 
     const tokenFacturacion = apiGwFacturacion.root.addResource('facturacion');
-    tokenFacturacion.addMethod('POST');
-    tokenFacturacion.addMethod('GET')
+    tokenFacturacion.addMethod('PUT');
+    const datosFacturaRFC = tokenFacturacion.addResource('{rfc}')
+    datosFacturaRFC.addMethod('GET');
+    datosFacturaRFC.addMethod('POST');
   }
 
   /*private createAPiReceta(recetaLambda:IFunction){

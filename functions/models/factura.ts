@@ -27,6 +27,7 @@ export class Factura{
     public Emisor: Emisor,
     public Receptor: Receptor,
     public Conceptos: Concepto[],
-    public Impuestos: Impuestos
+    public Impuestos: Impuestos,
+    public fechaFacturado?:Date
   ){}
 }

@@ -19,20 +19,24 @@ const ventaDB = (mongoUri: string)=>{
     },
     saveVenta:(venta:any)=>{
       return new Venta({
-        ventaProducto:venta.ventaProducto,
-        fechaVenta:venta.fechaVenta,
-        iva:venta.iva,
-        subTotal:venta.subTotal,
-        total:venta.total,
-        descuento:venta.descuento,
-        noTicket:venta.noTicket,
-        cajero:venta.cajero,
-        efectivo:venta.efectivo,
-        cambio:venta.cambio,
-        banco:venta.banco,
-        noAprobacion:venta.noAprobacion,
-        noTransaccion:venta.noTransaccion,
-        isDevolucion:venta.isDevolucion
+        ventaProducto :venta.ventaProducto,
+        fechaVenta    :venta.fechaVenta,
+        iva           :venta.iva,
+        subTotal      :venta.subTotal,
+        total         :venta.total,
+        formaPago     :venta.formaPago,
+        descuento     :venta.descuento,
+        noTicket      :venta.noTicket,
+        cajero        :venta.cajero,
+        efectivo      :venta.efectivo,
+        cambio        :venta.cambio,
+        banco         :venta.banco,
+        noAprobacion  :venta.noAprobacion,
+        noTransaccion :venta.noTransaccion,
+        isDevolucion  :venta.isDevolucion,
+        isFacturado   :venta.isFacturado,
+        sucursal      :venta.sucursal,
+        fechaFacturado:null
       })
       .save()
       .then((ventaSaved:any)=>{
