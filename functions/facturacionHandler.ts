@@ -75,8 +75,8 @@ async function sendEmail() {
     port:587,
     secure:false,
     auth:{
-      user:'AKIARYNO6URAVNCZRUEU',
-      pass:'BD3APUUtiKO7OPHU3hhUPh4dvj1kEitiRyxexVUNgq6R'
+      user:'',
+      pass:''
     }
   });
   
