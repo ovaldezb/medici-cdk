@@ -71,7 +71,7 @@ export const handler = async function (event:any) {
 
 async function sendEmail() {
   const transporter = nodeMailer.createTransport({
-    host:'email-smtp.us-east-1.amazonaws.com',
+    host:process.env.EMAIL_HOST,
     port:587,
     secure:false,
     auth:{
