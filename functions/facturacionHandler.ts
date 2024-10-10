@@ -7,8 +7,14 @@ import { Retenciones } from './models/retenciones';
 import { ImpuestosConcepto } from './models/impuestosConcepto';
 import { Emisor } from './models/emisor';
 import { Receptor } from './models/receptor';
+import { pipeline } from "node:stream";
+import { promisify } from "node:util";
+import { createWriteStream } from "node:fs";
+const nodeMailer = require('nodemailer');
 const database = require('./service/facturaEmitidaDB');
 const db = database(process.env.MONGODB_URI);
+
+var fs = require('fs');
 
 const headersSW ={
   'Access-Control-Allow-Origin' : '*',
@@ -36,7 +42,10 @@ export const handler = async function (event:any) {
         return obtieneDatosByRFC(rfc);
       }else if(action==='idticket'){
         let ticketId = event.queryStringParameters.ticketId;
-        const filtro = {noTicket:ticketId}
+        let sucursal = event.queryStringParameters.sucursal;
+        let fecha = event.queryStringParameters.fecha;
+        let total = event.queryStringParameters.total;
+        const filtro = {noTicket:ticketId,sucursal:sucursal, total:Number(total),fechaVenta:{'$gte':`${fecha}T00:00:00.000Z`,'$lte':`${fecha}T23:59:59.999Z`}}
         return obtieneVentaById(filtro);
       }else if(action==='idventa'){
         let idVenta = event.queryStringParameters.ventaId;
@@ -48,6 +57,8 @@ export const handler = async function (event:any) {
         return ontieneRegimenFiscal();
       }else if(action==='formapago'){
         return obtieneFormaPago();
+      }else if(action==='email'){
+        return sendEmail();
       }
     case 'POST':
       return emisionFactura(event);
@@ -56,6 +67,56 @@ export const handler = async function (event:any) {
     default:
       throw new Error('Unsupported route '+method);
   }
+}
+
+async function sendEmail() {
+  const transporter = nodeMailer.createTransport({
+    host:'email-smtp.us-east-1.amazonaws.com',
+    port:587,
+    secure:false,
+    auth:{
+      user:'AKIARYNO6URAVNCZRUEU',
+      pass:'BD3APUUtiKO7OPHU3hhUPh4dvj1kEitiRyxexVUNgq6R'
+    }
+  });
+  
+  const streamPipeline = promisify(pipeline);
+  const responsepdf = await fetch("http://genera-pdf-app-env.eba-jmpczcmm.us-east-1.elasticbeanstalk.com/api/pdf", {
+    method: "POST",
+    body: '<html><body><p style="color:red">Este es un PDF generado a partir de HTML</p></body></html>',
+  });
+  if (!responsepdf.ok){
+    const data:any = await responsepdf.json();
+    console.log(data.message);
+    
+  }else{
+    await streamPipeline(responsepdf.body!, createWriteStream(__dirname+"/archivo.pdf"));
+  }
+  
+  const mailOptions = {
+    from:'omar_cio@hotmail.com',
+    to: 'omar.valdez.becerril@gmail.com',
+    subject:'Mensaje Prueba 1 desde lambda',
+    text:'Hola Mundo desde lambda',
+    attachments:[
+      {
+        path:__dirname+'/document.pdf',
+        filename:'file2.pdf',
+        content:'Hola Mundo 1 lambda'
+      }
+    ]
+  }
+  
+  const response = await new Promise((rsv,rjt)=>{ 
+      transporter.sendMail(mailOptions,(err:any,info:any)=>{});
+  });
+  //console.log('response:',response);
+  return{
+    statusCode:200,
+    body:JSON.stringify({mensaje:response}),
+    headers:headers
+  }
+  
 }
 
 async function obtieneDatosByRFC(rfc:string) {

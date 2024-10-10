@@ -29,7 +29,7 @@ const CitasSchema = new Schema({
   }],
   exploracionFisica: String,
   diagnostico: String,
-  tratamiento: String,
+  tratamiento: [String],
   horaTomaSignos: Date,
   horaCreaCita: Date,
   noReceta: String,
