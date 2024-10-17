@@ -5,6 +5,7 @@ export class Receptor{
     public Nombre: String,
     public DomicilioFiscalReceptor: String,
     public RegimenFiscalReceptor: String,
-    public UsoCFDI: String
+    public UsoCFDI: String,
+    public email?: String
   ){}
 }

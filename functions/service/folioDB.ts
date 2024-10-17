@@ -31,6 +31,18 @@ const folioDB = (mongoUri:string)=>{
           console.log(err);
           return {error:err};
         })
+    },
+    readFolio:(tipo:string, sucursal:string)=>{
+      return Folio.findOne(
+        {tipo:tipo, sucursal:sucursal},
+        {new : true})
+        .then((folioFound:any)=>{
+          return {folio:folioFound};
+        })
+        .catch((err:any)=>{
+          console.log(err);
+          return {error:err};
+        })
     }
   };
 }

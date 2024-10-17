@@ -127,11 +127,11 @@ const facturaEmitidaDB = (mongoUri:string)=>{
     updateVentaFacturada:(idVenta:String,fechaFacturado:Date)=>{
       Venta.updateOne({_id:idVenta},{isFacturado:true,fechaFacturado:fechaFacturado})
       .then((ventaFound:any)=>{
-        console.log(ventaFound);
         return ventaFound;
       })
       .catch((err:any)=>{
         console.log(err);
+        return{error:err}
       });
     },
   }

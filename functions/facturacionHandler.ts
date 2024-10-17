@@ -7,14 +7,10 @@ import { Retenciones } from './models/retenciones';
 import { ImpuestosConcepto } from './models/impuestosConcepto';
 import { Emisor } from './models/emisor';
 import { Receptor } from './models/receptor';
-import { pipeline } from "node:stream";
-import { promisify } from "node:util";
-import { createWriteStream } from "node:fs";
-const nodeMailer = require('nodemailer');
 const database = require('./service/facturaEmitidaDB');
 const db = database(process.env.MONGODB_URI);
-
-var fs = require('fs');
+const fh = require('./service/facturaHtml');
+const facturaHtml = fh();
 
 const headersSW ={
   'Access-Control-Allow-Origin' : '*',
@@ -58,7 +54,7 @@ export const handler = async function (event:any) {
       }else if(action==='formapago'){
         return obtieneFormaPago();
       }else if(action==='email'){
-        return sendEmail();
+        return sendEmail('test001.pdf','cfdi.xml','omar.valdez.becerril@gmail.com','<xml></xml>');
       }
     case 'POST':
       return emisionFactura(event);
@@ -69,53 +65,48 @@ export const handler = async function (event:any) {
   }
 }
 
-async function sendEmail() {
-  const transporter = nodeMailer.createTransport({
-    host:process.env.EMAIL_HOST,
-    port:587,
-    secure:false,
-    auth:{
-      user:process.env.EMAIL_USER,
-      pass:process.env.EMAIL_PWD
-    }
-  });
-  
-  const streamPipeline = promisify(pipeline);
-  const responsepdf = await fetch("http://genera-pdf-app-env.eba-jmpczcmm.us-east-1.elasticbeanstalk.com/api/pdf", {
-    method: "POST",
-    body: '<html><body><p style="color:red">Este es un PDF generado a partir de HTML</p></body></html>',
-  });
-  if (!responsepdf.ok){
-    const data:any = await responsepdf.json();
-    console.log(data.message);
-    
-  }else{
-    await streamPipeline(responsepdf.body!, createWriteStream(__dirname+"/archivo.pdf"));
+async function sendEmail( pdfFileName:string, xmlFileName:string, to:string, xml:string) {
+  const htmlBody:string = '';
+  const datosCorreo ={
+    'to':to,
+    'from':'omar_cio@hotmail.com',
+    'pdfFileName':pdfFileName,
+    'html':htmlBody,
+    'subject':'Factura de Clinicas B&B',
+    'body':'',
+    'xml':xml,
+    'xmlFileName':xmlFileName
   }
   
-  const mailOptions = {
-    from:'omar_cio@hotmail.com',
-    to: 'omar.valdez.becerril@gmail.com',
-    subject:'Mensaje Prueba 1 desde lambda',
-    text:'Hola Mundo desde lambda',
-    attachments:[
-      {
-        path:__dirname+'/document.pdf',
-        filename:'file2.pdf',
-        content:'Hola Mundo 1 lambda'
+  try{
+    const responsepdf = await fetch(process.env.PDF_SERVICE_URL+"/api/pdf", {
+      method: "POST",
+      body: JSON.stringify(datosCorreo),
+      headers: {'Content-Type': 'application/json'}
+    });
+    const resp:any = await responsepdf.text();
+    if (!responsepdf.ok){
+      return{
+        statusCode:200,
+        body:JSON.stringify({'mensaje':'error'}),
+        headers:headers
       }
-    ]
+    }else{
+      return{
+        statusCode:200,
+        body:JSON.stringify({mensaje:resp}),
+        headers:headers
+      }
+    }
+  }catch(error:any){
+    console.log('Error catch',error);
+    return{
+      statusCode:200,
+      body:JSON.stringify({'mensaje':error}),
+      headers:headers
+    }
   }
   
-  const response = await new Promise((rsv,rjt)=>{ 
-      transporter.sendMail(mailOptions,(err:any,info:any)=>{});
-  });
-  //console.log('response:',response);
-  return{
-    statusCode:200,
-    body:JSON.stringify({mensaje:response}),
-    headers:headers
-  }
   
 }
 
@@ -318,7 +309,6 @@ async function emisionFactura(event:any) {
   });
 
   const responseEmision:any = await response.json();
-  console.log(responseEmision);
   if(responseEmision.data===null || responseEmision.data===undefined){
     return{
       statusCode:500,
@@ -326,6 +316,7 @@ async function emisionFactura(event:any) {
       headers:headers
     }
   }
+  console.log('Se timbró la factura');
   const facturaResponse = await db.save(responseEmision,factura.Receptor.Rfc,factura.Receptor.Nombre);
   if(facturaResponse===null || facturaResponse.error!= null){
     return{
@@ -334,14 +325,35 @@ async function emisionFactura(event:any) {
       headers:headers
     }
   }
-  await db.updateVentaFacturada(event.pathParameters.rfc, responseEmision.data.fechaTimbrado);
+  //console.log('Se guardó la Fact en la BD:'+facturaResponse);
+  //enviar correo con pdf y xml
+  const htmlBody = await facturaHtml.generaHtml(responseEmision.data,body);
+  const datosCorreo ={
+    'to':body.Receptor.email,
+    'from':'omar_cio@hotmail.com',
+    'pdfFileName':responseEmision.data.uuid+'.pdf',
+    'html':htmlBody,
+    'subject':'Factura de Clinicas B&B',
+    'body':'<h2>Adjunto encontrará su factura electrónica</h2>',
+    'xml':responseEmision.data.cfdi,
+    'xmlFileName':'cfdi.xml'
+  }
+  const responsepdf = await fetch(process.env.PDF_SERVICE_URL+"/api/pdf", {
+    method: "POST",
+    body: JSON.stringify(datosCorreo),
+    headers: {'Content-Type': 'application/json'}
+  });
+  //console.log('Envio de correo con pdf '+responsepdf);
+
+  const resultUpdt = await db.updateVentaFacturada(event.pathParameters.rfc, responseEmision.data.fechaTimbrado);
   return {
     statusCode:200,
     body:JSON.stringify(
       {
       'uuid':facturaResponse.facturaEmitida.uuid,
       'fechaTimbrado':facturaResponse.facturaEmitida.fechaTimbrado,
-      'rfc':facturaResponse.facturaEmitida.rfc
+      'rfc':facturaResponse.facturaEmitida.rfc,
+      'message':resultUpdt
       }
     ),
     headers:headers

@@ -72,6 +72,7 @@ export class SwLambdaFunctions extends Construct{
         URL_FACTURACION:`${process.env.URL_FACTURACION}`,
         USER_SWSAP:`${process.env.USER_SWSAP}`,
         PASSWORD_SWSAP:`${process.env.PASSWORD_SWSAP}`,
+        PDF_SERVICE_URL:`${process.env.PDF_SERVICE_URL}`
       },
       runtime: Runtime.NODEJS_18_X
     }
